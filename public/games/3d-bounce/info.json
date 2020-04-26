@@ -1,4 +1,7 @@
 {
   "name": "3D Bounce",
-  "author": "Marcello Bastea-Forte"
+  "author": "Marcello Bastea-Forte",
+  "description": "Really bad 3D pong game",
+  "date": "Nov 30, 1996",
+  "tool": "knp"
 }

@@ -16,12 +16,12 @@ export default function Home({ games }) {
 
       <div className="grid">
         {Object.keys(games).map((id) => {
-          const { name, author, date } = games[id];
+          const { name, author, description, tool } = games[id];
           return (
-            <a href={`games/${id}`} className="card" key={id}>
-              <h3>{name}</h3>
-              <p>by {author ?? <i>Unknown</i>}</p>
-              {date}
+            <a href={`play/${id}`} className="card" key={id}>
+              <p className="title">{name}</p>
+              <p className="author">by {author ?? <i>Unknown</i>}</p>
+              {description && <p className="description">{description}</p>}
             </a>
           );
         })}
@@ -55,15 +55,15 @@ export default function Home({ games }) {
           border-color: #0070f3;
         }
 
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
+        .card .title {
+          font-weight: 600;
+        }
+        .card .author {
+          color: #666;
         }
 
         .card p {
           margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
         }
 
         @media (max-width: 600px) {

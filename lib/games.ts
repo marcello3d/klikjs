@@ -6,6 +6,9 @@ export type Game = {
   name: string;
   author?: string;
   date?: string;
+  tool?: string;
+  description?: string;
+  runtimeClass: string;
   resourcePath: string;
   width: number;
   height: number;
@@ -25,7 +28,6 @@ export async function getGames(): Promise<Record<string, Game>> {
       games[id] = game;
     }
   }
-  console.log("games", games);
   return games;
 }
 async function parseGame(id: string): Promise<Game | undefined> {
@@ -38,7 +40,6 @@ async function parseGame(id: string): Promise<Game | undefined> {
   if (!infoJson) {
     console.warn(`[games:${id}] no json ${infoPath}`);
   }
-  const { name = id, author, date } = infoJson || {};
   if (!(await fileExists(indexPath))) {
     console.warn(`[games:${id}] could not find ${indexPath}`);
     return;
@@ -50,26 +51,22 @@ async function parseGame(id: string): Promise<Game | undefined> {
     return;
   }
   const [, width, height] = canvasTag;
-  const runtimeCode = /new Runtime\("MMFCanvas", "(.+?)"\);/im.exec(indexHtml);
+  const runtimeCode = /new (Runtime(?:Dev)?)\("MMFCanvas", "(.+?)"\);/im.exec(
+    indexHtml
+  );
   if (!runtimeCode) {
     console.warn(`[games:${id}] could not find runtime code`);
     return;
   }
-  const [, resourcePath] = runtimeCode;
-  const game = {
-    name,
-    author,
-    date,
+  const [, runtimeClass, resourcePath] = runtimeCode;
+  return {
+    name: id,
+    ...infoJson,
+    runtimeClass,
     resourcePath,
     width: parseInt(width, 10),
     height: parseInt(height, 10),
   };
-  for (const key of Object.keys(game)) {
-    if (game[key] === undefined) {
-      delete game[key];
-    }
-  }
-  return game;
 }
 export async function getGameIds(): Promise<string[]> {
   return Object.keys(await getGames());
