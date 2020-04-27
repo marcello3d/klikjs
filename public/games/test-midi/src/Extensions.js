@@ -31,7 +31,7 @@ CExtLoader.prototype =
 
     createList: function (file) {
 
-        var extMaxHandle = 0;
+        var extMaxHandle = 2;
         if (extMaxHandle) {
             this.extensions = new Array(extMaxHandle);
             this.numOfConditions = new Array(extMaxHandle);
