@@ -1758,3 +1758,342 @@ CSound.prototype =
     
 
     
+
+// CMusicBank object
+// -----------------------------------------------------------------
+
+function CMusicBank(a)
+{
+	this.app = a;
+	this.musics = null;
+	this.nHandlesReel = 0;
+	this.nHandlesTotal = 0;
+	this.nMusics = 0;
+	this.offsetsToMusics = null;
+	this.handleToIndex = null;
+	this.useCount = null;
+	this.file = null;
+	//  this.bChrome=navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+}
+CMusicBank.prototype =
+{
+	preLoad: function (f)
+	{
+		this.file = f;
+
+		this.nHandlesReel = this.file.readAShort();
+		this.offsetsToMusics = new Array(this.nHandlesReel);
+		this.useCount = new Array(this.nHandlesReel);
+		this.handleToIndex = new Array(this.nHandlesReel);
+		var n;
+		for (n = 0; n < this.nHandlesReel; n++)
+		{
+			this.useCount[n] = 0;
+			this.handleToIndex[n] = -1;
+		}
+
+		var nSons = this.file.readAShort();
+		var n;
+		var music = new CMusic(this.app);
+		var offset;
+		for (n = 0; n < nSons; n++)
+		{
+			offset = this.file.getFilePointer();
+			music.loadHandle();
+			this.offsetsToMusics[music.handle] = offset;
+		}
+
+		this.nHandlesTotal = this.nHandlesReel;
+		this.nMusics = 0;
+		this.musics = null;
+	},
+
+	getMusicFromHandle: function (handle)
+	{
+		if (handle >= 0 && handle < this.nHandlesTotal)
+			if (this.handleToIndex[handle] != -1)
+				return this.musics[this.handleToIndex[handle]];
+		return null;
+	},
+
+	getMusicHandleFromName: function (musicName)
+	{
+	    for (var h = 0; h < this.nHandlesTotal; h++)
+	    {
+	        if (this.handleToIndex[h] != -1)
+	        {
+	            var snd = this.musics[this.handleToIndex[h]];
+	            if (snd.name == musicName)
+	                return h;
+	        }
+	    }
+	    return -1;
+	},
+
+	checkLoad:          function ()
+	{
+		var index;
+		for (index = 0; index < this.nMusics; index++)
+		{
+			if (this.musics[index] != null)
+			{
+				this.musics[index].checkLoad();
+			}
+		}
+	},
+	getMusicFromIndex:  function (index)
+	{
+		if (index >= 0 && index < this.nMusics)
+			return this.musics[index];
+		return null;
+	},
+
+	resetToLoad: function ()
+	{
+		if ((this.app.dwOptions & CRunApp.AH2OPT_LOADDATAATSTART) == 0 && (this.app.dwOptions & CRunApp.AH2OPT_KEEPRESOURCESBETWEENFRAMES) == 0)
+		{
+			var n;
+			for (n = 0; n < this.nHandlesReel; n++)
+				this.useCount[n] = 0;
+		}
+	},
+
+	setAllToLoad: function ()
+	{
+		var n;
+		for (n = 0; n < this.nHandlesReel; n++)
+		{
+			if (this.offsetsToMusics[n])
+				this.useCount[n] = 1;
+		}
+	},
+
+	addAllToLoad: function ()
+	{
+		var n;
+		for (n = 0; n < this.nHandlesReel; n++)
+		{
+			if (this.offsetsToMusics[n])
+			{
+				this.app.imagesToLoad++;
+			}
+		}
+	},
+
+	setToLoad: function (handle)
+	{
+		this.useCount[handle]++;
+	},
+
+	enumerate: function (num)
+	{
+		this.setToLoad(num);
+		return -1;
+	},
+
+
+	load: function ()
+	{
+		var n;
+
+		this.nMusics = 0;
+		for (n = 0; n < this.nHandlesReel; n++)
+		{
+			if (this.useCount[n] != 0)
+				this.nMusics++;
+		}
+
+		var newMusics = new Array(this.nMusics);
+		var count = 0;
+		var h;
+		for (h = 0; h < this.nHandlesReel; h++)
+		{
+			if (this.useCount[h] != 0)
+			{
+				if (this.musics != null && this.handleToIndex[h] != -1 && this.musics[this.handleToIndex[h]] != null)
+				{
+					newMusics[count] = this.musics[this.handleToIndex[h]];
+					newMusics[count].useCount = this.useCount[h];
+				}
+				else
+				{
+					newMusics[count] = new CMusic(this.app);
+					this.file.seek(this.offsetsToMusics[h]);
+					newMusics[count].load();
+					newMusics[count].useCount = this.useCount[h];
+				}
+				count++;
+			}
+		}
+		this.musics = newMusics;
+
+		this.handleToIndex = new Array(this.nHandlesReel);
+		for (n = 0; n < this.nHandlesReel; n++)
+			this.handleToIndex[n] = -1;
+		for (n = 0; n < this.nMusics; n++)
+			this.handleToIndex[this.musics[n].handle] = n;
+		this.nHandlesTotal = this.nHandlesReel;
+
+		this.resetToLoad();
+	}
+}
+
+// CMusic object
+// -----------------------------------------------------------------
+function CMusic(a)
+{
+	this.application = a;
+	this.url = null;
+	this.timidity = null;
+	this.type = 0;
+	this.file = a.file;
+	this.handle = -1;
+	this.useCount = 0;
+	this.nLoops = 0;
+	this.numMusic = 0;
+	this.name = null;
+	this.bPaused = false;
+	this.bPlaying = false;
+	this.bEnded = false;
+}
+CMusic.prototype =
+{
+	loadHandle: function ()
+	{
+		this.handle = this.file.readAShort();
+		this.file.skipBytes(5);
+		var l = this.file.readAShort();
+		if (this.file.bUnicode == false)
+			this.file.skipBytes(l);
+		else
+			this.file.skipBytes(l * 2);
+	},
+
+	doLoad:     function ()
+	{
+		this.url = this.application.resources + CServices.formatDiscName(this.handle, 'mid');
+		console.log('[MIDI] load:', this.url);
+		if (window.Timidity) {
+			this.timidity = new window.Timidity('/midi/');
+			this.timidity.load(this.url);
+			const that = this;
+
+			function onEnded () {
+				that.bEnded = true;
+			}
+
+			this.timidity.on('ended', onEnded)
+		}
+
+		this.application.dataHasLoaded(this);
+	},
+	load:       function ()
+	{
+		this.handle = this.file.readAShort();
+		this.type = this.file.readAByte();
+		this.frequency = this.file.readAInt();
+		this.currentFrequency = this.frequency;
+		var l = this.file.readAShort();
+		this.name = this.file.readAString(l);
+		this.timidity = null;
+		this.application.addDataToLoad(this);
+	},
+	playIt:     function ()
+	{
+		if (this.timidity)
+		{
+			this.bEnded = false;
+			this.timidity.seek(0);
+			this.timidity.play();
+		}
+		else if (window.MIDIjs) {
+			window.MIDIjs.play(this.url)
+		}
+		this.bPaused = false;
+		this.bPlaying = true;
+	},
+	play:       function (nl)
+	{
+		this.nLoops = nl;
+		if (this.nLoops == 0)
+			this.nLoops = 10000000;
+
+		this.playIt();
+	},
+	stop:       function ()
+	{
+		if (this.timidity)
+			this.timidity.pause();
+		else if (window.MIDIjs)
+			window.MIDIjs.pause();
+		this.bPlaying = false;
+	},
+
+
+	pause: function ()
+	{
+		if (!this.bPaused) {
+			if (this.timidity)
+				this.timidity.pause();
+			else if (window.MIDIjs)
+				window.MIDIjs.pause();
+			this.bPaused = true;
+		}
+	},
+
+
+	resume: function ()
+	{
+		if (this.bPaused) {
+			if (this.timidity)
+				this.timidity.play();
+			else if (window.MIDIjs)
+				window.MIDIjs.resume();
+			this.bPaused = false;
+		}
+	},
+
+	isPaused: function ()
+	{
+		return this.bPaused;
+	},
+
+	isPlaying: function ()
+	{
+		return this.bPlaying;
+	},
+
+	hasEnded: function ()
+	{
+		if (this.timidity)
+		{
+			return this.bEnded;
+		}
+	},
+
+	checkMusic: function ()
+	{
+		if (this.bPlaying == true && this.bPaused == false)
+		{
+			if (this.hasEnded())
+			{
+				if (this.nLoops > 0)
+				{
+					this.nLoops--;
+					if (this.nLoops > 0)
+					{
+						this.playIt();
+						return false;
+					}
+				}
+				this.bPlaying = false;
+				return true;
+			}
+		}
+		return false;
+	}
+
+}
+
+
+

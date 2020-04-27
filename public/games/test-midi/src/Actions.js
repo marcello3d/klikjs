@@ -170,6 +170,12 @@ CAct.create = function (app)
 		case ((8 << 16) | 0xFFFE):
 			act = new ACT_RESUMESAMPLE();
 			break;
+		case ((9 << 16) | 0xFFFE):
+			act = new ACT_PAUSEMUSIC();
+			break;
+		case ((10 << 16) | 0xFFFE):
+			act = new ACT_RESUMEMUSIC();
+			break;
 		case ((11 << 16) | 0xFFFE):
 			act = new ACT_PLAYCHANNEL();
 			break;
@@ -214,6 +220,18 @@ CAct.create = function (app)
 			break;
 		case ((25 << 16) | 0xFFFE):
 			act = new ACT_RESUMEALLCHANNELS();
+			break;
+		case ((26 << 16) | 0xFFFE):
+			// act = new ACT_PLAYMUSICFILE();
+			break;
+		case ((27 << 16) | 0xFFFE):
+			// act = new ACT_PLAYLOOPMUSICFILE();
+			break;
+		case ((28 << 16) | 0xFFFE):
+			// act = new ACT_PLAYFILECHANNEL();
+			break;
+		case ((29 << 16) | 0xFFFE):
+			// act = new ACT_PLAYLOOPFILECHANNEL();
 			break;
 		case ((30 << 16) | 0xFFFE):
 			act = new ACT_LOCKCHANNEL();
@@ -1459,6 +1477,18 @@ ACT_PAUSESAMPLE.prototype =
 }
 // CUT
 
+function ACT_PAUSEMUSIC()
+{
+}
+ACT_PAUSEMUSIC.prototype =
+{
+	execute: function (rhPtr)
+	{
+		rhPtr.rhApp.musicPlayer.pause();
+	}
+}
+// CUT
+
 function ACT_PLAYCHANNEL()
 {
 }
@@ -1547,21 +1577,20 @@ ACT_PLAYLOOPMUSIC.prototype =
 	{
 		var p = this.evtParams[0];
 		var nLoops = rhPtr.get_EventExpressionInt(this.evtParams[1]);
-		var bPrio = false;
-		var nSound = -1;
+		var nMusic = -1;
 	    // PARAM_EXPSTRING?
 		if (p.code == 45) {
 		    var name = rhPtr.get_EventExpressionString(p);
-		    nSound = rhPtr.rhApp.soundBank.getSoundHandleFromName(name);
+		    nMusic = rhPtr.rhApp.soundBank.getSoundHandleFromName(name);
 		}
 		else {
-		    bPrio = (p.sndFlags & PARAM_SAMPLE.PSOUNDFLAG_UNINTERRUPTABLE) != 0;
-		    nSound = p.sndHandle;
+		    nMusic = p.sndHandle;
 		}
-		if (nSound >= 0)
-		    rhPtr.rhApp.soundPlayer.play(nSound, nLoops, -1, bPrio);
+		if (nMusic >= 0)
+		    rhPtr.rhApp.musicPlayer.play(nMusic, nLoops);
 	}
 }
+
 // CUT
 
 function ACT_PLAYSAMPLE()
@@ -1585,6 +1614,32 @@ ACT_PLAYSAMPLE.prototype =
 	    }
 	    if ( nSound >= 0 )
 	        rhPtr.rhApp.soundPlayer.play(nSound, 1, -1, bPrio);
+	}
+}
+
+// CUT
+
+function ACT_PLAYMUSIC()
+{
+}
+ACT_PLAYMUSIC.prototype =
+{
+	execute: function (rhPtr)
+	{
+	    var p = this.evtParams[0];
+	    var bPrio = false;
+	    var nMusic = -1;
+	    // PARAM_EXPSTRING?
+	    if (p.code == 45) {
+	        var name = rhPtr.get_EventExpressionString(p);
+	        nMusic = rhPtr.rhApp.musicBank.getSoundHandleFromName(name);
+	    }
+	    else {
+	        nMusic = p.sndHandle;
+	    }
+	    if ( nMusic >= 0 )
+	        rhPtr.rhApp.musicPlayer.play(nMusic, 1);
+
 	}
 }
 // CUT
@@ -1633,6 +1688,18 @@ ACT_RESUMESAMPLE.prototype =
 		}
 		if (nSound >= 0)
 		    rhPtr.rhApp.soundPlayer.resumeSample(nSound);
+	}
+}
+// CUT
+
+function ACT_RESUMEMUSIC()
+{
+}
+ACT_RESUMEMUSIC.prototype =
+{
+	execute: function (rhPtr)
+	{
+		rhPtr.rhApp.musicPlayer.resume();
 	}
 }
 // CUT
@@ -1789,6 +1856,18 @@ ACT_STOPSAMPLE.prototype =
 	execute: function (rhPtr)
 	{
 		rhPtr.rhApp.soundPlayer.stopAllSounds();
+	}
+}
+// CUT
+
+function ACT_STOPMUSIC()
+{
+}
+ACT_STOPMUSIC.prototype =
+{
+	execute: function (rhPtr)
+	{
+		rhPtr.rhApp.musicPlayer.stop();
 	}
 }
 // CUT

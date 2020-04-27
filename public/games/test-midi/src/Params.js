@@ -493,6 +493,11 @@ function PARAM_SAMPLE(app)
 	this.sndHandle = app.file.readAShort();
 	this.sndFlags = app.file.readAShort();
 }
+function PARAM_MUSIC(app)
+{
+	this.sndHandle = app.file.readAShort();
+	this.sndFlags = app.file.readAShort();
+}
 function PARAM_SHORT(app)
 {
 	this.value = app.file.readAShort();

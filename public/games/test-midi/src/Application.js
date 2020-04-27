@@ -1166,6 +1166,7 @@ CRunApp.prototype =
 					this.loading = false;
 					this.imageBank.resetToLoad();
 					this.soundBank.resetToLoad();
+					this.musicBank.resetToLoad();
 					this.fontBank.resetToLoad();
 					this.imagesToLoad = 0;
 					this.imagesLoaded = 0;
@@ -2840,6 +2841,7 @@ CRunFrame.prototype =
 
 		this.app.imageBank.resetToLoad();
 		this.app.soundBank.resetToLoad();
+		this.app.musicBank.resetToLoad();
 		this.app.fontBank.resetToLoad();
 		this.app.OIList.load(this.app.file);
 		this.app.OIList.enumElements(this.app.imageBank, this.app.fontBank);
@@ -2847,6 +2849,7 @@ CRunFrame.prototype =
 		{
 			this.app.fontBank.setAllToLoad();
 			this.app.soundBank.setAllToLoad();
+			this.app.musicBank.setAllToLoad();
 			//if (this.app.mosaicMaxHandle == 0)
 			this.app.imageBank.setAllToLoad();
 		}
@@ -2854,6 +2857,8 @@ CRunFrame.prototype =
 		this.app.fontBank.load(this.app.file);
 		this.evtProg.enumSounds(this.app.soundBank);
 		this.app.soundBank.load();
+		this.evtProg.enumSounds(this.app.musicBank);
+		this.app.musicBank.load();
 
 		this.app.OIList.resetOICurrent();
 		for (n = 0; n < this.LOList.nIndex; n++)
@@ -3549,6 +3554,100 @@ CSoundPlayer.prototype =
 					this.channels[c] = null;
 				}
 			}
+		}
+	}
+}
+
+
+
+// CMusicPlayer object
+// ----------------------------------------------------------------
+function CMusicPlayer(a)
+{
+	this.app = a;
+	this.bOn = true;
+	this.currentMusic = null;
+}
+CMusicPlayer.prototype =
+{
+	reset:           function ()
+	{
+	},
+
+	play: function (handle, nLoops)
+	{
+		this.stopCurrentMusic();
+		var music = this.app.musicBank.getMusicFromHandle(handle);
+		if (music == null)
+			return;
+		this.currentMusic = music;
+		music.play(nLoops);
+	},
+
+
+	setOnOff: function (bState)
+	{
+		if (bState != this.bOn)
+		{
+			this.bOn = bState;
+			if (this.bOn == false)
+				this.stop();
+		}
+	},
+
+	getOnOff: function ()
+	{
+		return this.bOn;
+	},
+
+	stopCurrentMusic: function ()
+	{
+		if (this.currentMusic != null) {
+			this.currentMusic.stop();
+			this.currentMusic = null;
+		}
+	},
+
+	isMusicPlaying: function (handle)
+	{
+		if (this.currentMusic == null)
+		{
+			return false;
+		}
+		if (handle == null || handle == this.currentMusic.handle) {
+			return this.currentMusic.isPlaying();
+		}
+		return false;
+	},
+	isMusicPaused: function ()
+	{
+		if (this.currentMusic != null)
+		{
+			return this.currentMusic.isPaused();
+		}
+		return false;
+	},
+
+	pause: function ()
+	{
+		if (this.currentMusic != null) {
+			this.currentMusic.pause();
+		}
+	},
+
+	resume: function ()
+	{
+		if (this.currentMusic != null) {
+			this.currentMusic.resume();
+		}
+	},
+
+	checkMusic: function ()
+	{
+
+		if (this.currentMusic != null && this.currentMusic.checkMusic())
+		{
+			this.currentMusic = null;
 		}
 	}
 }

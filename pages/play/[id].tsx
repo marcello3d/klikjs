@@ -51,6 +51,10 @@ export default function Game({
         <canvas id="MMFCanvas" width={width} height={height} />
       </div>
       <script
+        type="text/javascript"
+        src="https://www.midijs.net/lib/midi.js"
+      ></script>
+      <script
         src={`/games/${id}/src/${runtimeClass}.js`}
         type="text/javascript"
       ></script>

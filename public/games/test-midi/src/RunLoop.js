@@ -2113,6 +2113,7 @@ CRun.prototype =
 	f_GameLoop: function ()
 	{
 		this.rhApp.soundPlayer.checkSounds();
+		this.rhApp.musicPlayer.checkMusic();
 
 	    // For some reason the event loop of subapps is called while the images are still loading O_o
         // Wait for all the data to be loaded
