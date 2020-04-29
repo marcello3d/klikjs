@@ -1583,7 +1583,7 @@ ACT_PLAYLOOPMUSIC.prototype =
 	    // PARAM_EXPSTRING?
 		if (p.code == 45) {
 		    var name = rhPtr.get_EventExpressionString(p);
-		    nMusic = rhPtr.rhApp.soundBank.getSoundHandleFromName(name);
+		    nMusic = rhPtr.rhApp.musicPlayer.getSoundHandleFromName(name);
 		}
 		else {
 		    nMusic = p.sndHandle;

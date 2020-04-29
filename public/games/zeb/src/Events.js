@@ -4246,7 +4246,9 @@ CEventProgram.prototype =
 					switch (evtPtr.evtParams[p].code)
 					{
 						case 6:
+						case 7:
 						case 35:
+						case 36:
 							pSample = evtPtr.evtParams[p];
 							sounds.enumerate(pSample.sndHandle);
 							break;
@@ -4310,7 +4312,7 @@ function CEventGroup()
 }
 CEventGroup.create = function (app)
 {
-	console.log('[EVENTGROUP]')
+	// console.log('[EVENTGROUP]')
 	var debut = app.file.getFilePointer();
 
 	var size = app.file.readShort('size');
@@ -4325,12 +4327,12 @@ CEventGroup.create = function (app)
 	evg.evgEvents = new Array(evg.evgNCond + evg.evgNAct);
 	var n;
 	var count = 0;
-	console.log('[EVENTGROUP] read conditions')
+	// console.log('[EVENTGROUP] read conditions')
 	for (n = 0; n < evg.evgNCond; n++)
 	{
 		evg.evgEvents[count++] = CCnd.create(app);
 	}
-	console.log('[EVENTGROUP] read actions')
+	// console.log('[EVENTGROUP] read actions')
 	for (n = 0; n < evg.evgNAct; n++)
 	{
 		evg.evgEvents[count++] = CAct.create(app);

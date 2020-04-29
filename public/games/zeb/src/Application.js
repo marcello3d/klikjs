@@ -3669,6 +3669,13 @@ CMusicPlayer.prototype =
 		}
 	},
 
+	stop: function ()
+	{
+		if (this.currentMusic != null) {
+			this.currentMusic.stop();
+		}
+	},
+
 	resume: function ()
 	{
 		if (this.currentMusic != null) {
