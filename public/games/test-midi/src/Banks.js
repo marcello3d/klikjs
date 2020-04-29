@@ -1918,8 +1918,8 @@ CMusicBank.prototype =
 				else
 				{
 					newMusics[count] = new CMusic(this.app);
-					this.file.seek(this.offsetsToMusics[h]);
-					newMusics[count].load();
+					// this.file.seek(this.offsetsToMusics[h]);
+					newMusics[count].load(h);
 					newMusics[count].useCount = this.useCount[h];
 				}
 				count++;
@@ -1987,9 +1987,10 @@ CMusic.prototype =
 
 		this.application.dataHasLoaded(this);
 	},
-	load:       function ()
+	load:       function (handle)
 	{
-		this.handle = this.file.readAShort('CMusic load: handle');
+		this.handle = handle;
+		// this.handle = this.file.readAShort('CMusic load: handle');
 		// this.type = this.file.readAByte('CMusic type');
 		// var l = this.file.readAShort('CMusic name length');
 		// this.name = this.file.readAString(l, 'CMusic name');
