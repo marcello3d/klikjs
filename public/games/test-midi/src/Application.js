@@ -329,13 +329,13 @@ CRunApp.prototype =
 {
 	loadInfo:        function ()
 	{
-		var version = this.infoFile.readAInt();
+		var version = this.infoFile.readAInt('version');
 		if (this.infoVersion < 0)
 			this.infoVersion = version;
 		if (version != this.infoVersion)
 		{
 			this.infoFile.setUnicode(true);
-			var name = this.infoFile.readAString();
+			var name = this.infoFile.readAString('name');
 			var path = this.infoPath + name;
 			window.open(path, "_self");
 		}
@@ -343,10 +343,10 @@ CRunApp.prototype =
 	},
 	load:            function ()
 	{
-		this.numberOfFiles = this.file.readAShort();
+		this.numberOfFiles = this.file.readAShort('numberOfFiles');
 		this.currentFile = 1;
 		this.loadingFile = new CFile();
-		var size = this.file.readAInt();
+		var size = this.file.readAInt('size');
 		var filePath = this.path.substring(0, this.path.length - 1) + this.currentFile.toString();
 		this.loadingFile.getFile(filePath, loadApplication, size);
 	},
@@ -364,15 +364,28 @@ CRunApp.prototype =
 			this.startApplication();
 			return;
 		}
-		var size = this.file.readAInt();
+		var size = this.file.readAInt('size');
 		var filePath = this.path.substring(0, this.path.length - 1) + this.currentFile.toString();
 		this.loadingFile.getFile(filePath, loadApplication, size);
 	},
+	setParentApp: function (pApp, sFrame, options, sprite, width, height)
+	{
+		this.parentApp = pApp;
+		this.parentOptions = options;
+		this.mainSprite = sprite;
+		this.startFrame = sFrame;
+		this.parentWidth = width;
+		this.parentHeight = height;
+	},
+
 	digest:          function ()
 	{
+		function debug(message) {
+			console.log('[DIGEST] ' + message);
+		}
 		// Charge le mini-header
 		this.file.seek(0);
-		var b = this.file.readBuffer(4);
+		var b = this.file.readBuffer(4, 'header');
 		this.bUnicode = false;
 		if (b[0] == 80 && b[1] == 65 && b[2] == 77 && b[3] == 85)
 		{
@@ -399,9 +412,10 @@ CRunApp.prototype =
 		var chSize;
 		while (chID != 0x7F7F)
 		{
-			chID = this.file.readAShort();
-			chFlags = this.file.readAShort();
-			chSize = this.file.readAInt();
+			chID = this.file.readAShort('chID');
+			chFlags = this.file.readAShort('chFlags');
+			chSize = this.file.readAInt('chSize');
+
 
 			if (chSize == 0)
 			{
@@ -413,6 +427,7 @@ CRunApp.prototype =
 			{
 				// CHUNK_APPHEADER
 				case 0x2223:
+					debug('CHUNK_APPHEADER');
 					this.loadAppHeader();
 					// Buffer pour les offsets frame
 					this.frameOffsets = new Array(this.gaNbFrames);
@@ -425,67 +440,78 @@ CRunApp.prototype =
 					break;
 				// CHUNK_APPHDR2
 				case 0x2245:
-					this.dwOptions = this.file.readAInt();
-					this.dwBuildType = this.file.readAInt();
-					this.dwBuildFlags = this.file.readAInt();
-					this.wScreenRatioTolerance = this.file.readAShort();
-					this.wScreenAngle = this.file.readAShort();
+					debug('CHUNK_APPHDR2');
+					this.dwOptions = this.file.readAInt('dwOptions');
+					this.dwBuildType = this.file.readAInt('dwBuildType');
+					this.dwBuildFlags = this.file.readAInt('dwBuildFlags');
+					this.wScreenRatioTolerance = this.file.readAShort('wScreenRatioTolerance');
+					this.wScreenAngle = this.file.readAShort('wScreenAngle');
 					break;
 				// CHUNK_APPNAME
 				case 0x2224:
-					this.appName = this.file.readAString();
+					debug('CHUNK_APPNAME');
+					this.appName = this.file.readAString('appName');
 					break;
 			    // CHUNK_APPCODEPAGE
 			    case 0x2246:
-			        this.codePage = this.file.readAInt();
+						debug('CHUNK_APPCODEPAGE');
+			        this.codePage = this.file.readAInt('codePage');
 			        break;
 			   // Target file name
 				case 0x222E:		// CHUNK_APPEDITORFILENAME:
-					this.appEditorFilename = this.file.readAString();
+					debug('CHUNK_APPEDITORFILENAME');
+					this.appEditorFilename = this.file.readAString('appEditorFilename');
 					break;
 				// Touch Screen message for iOS
 				case 0x224E:        // CHUNK_HTML5_TOUCHME
-					this.m_touchMe = this.file.readAString();
+					debug('CHUNK_HTML5_TOUCHME');
+					this.m_touchMe = this.file.readAString('m_touhMe');
 					break;
 				// CHUNK_GLOBALVALUES
 				case 0x2232:
+					debug('CHUNK_GLOBALVALUES');
 					this.loadGlobalValues();
 					break;
 				// CHUNK_GLOBALSTRINGS
 				case 0x2233:
+					debug('CHUNK_GLOBALVALUES');
 					this.loadGlobalStrings();
 					break;
 				// CHUNK_FRAMEITEMS
 				// CHUNK_FRAMEITEMS_2
 				case 0x2229:
 			    case 0x223F:
+						debug('CHUNK_FRAMEITEMS');
 				    this.extLoader = new CExtLoader(this);
 				    this.extLoader.createList(this.file);
 				    this.OIList.preLoad(this.file);
 					break;
 				// CHUNK_FRAMEHANDLES
 				case 0x222B:
+					debug('CHUNK_FRAMEHANDLES');
 					this.loadFrameHandles(chSize);
 					break;
 				// CHUNK_HTML5PRELOADER
 				case 0x224A:
-					this.preloaderType = this.file.readAInt();
-					this.preloaderCircleCenterX = this.file.readAInt();
-					this.preloaderCircleCenterY = this.file.readAInt();
-					this.preloaderCircleRadius = this.file.readAInt();
-					this.preloaderCircleThickness = this.file.readAInt();
-					this.preloaderCircleColor = this.file.readAColor();
-					this.preloaderBackColor = this.file.readAInt();
+					debug('CHUNK_HTML5PRELOADER');
+					this.preloaderType = this.file.readAInt('preloaderType');
+					this.preloaderCircleCenterX = this.file.readAInt('preloaderCircleCenterX');
+					this.preloaderCircleCenterY = this.file.readAInt('preloaderCircleCenterY');
+					this.preloaderCircleRadius = this.file.readAInt('preloaderCircleRadius');
+					this.preloaderCircleThickness = this.file.readAInt('preloaderCircleThickness');
+					this.preloaderCircleColor = this.file.readAColor('preloaderCircleColor');
+					this.preloaderBackColor = this.file.readAInt('preloaderBackColor');
 					if (this.preloaderBackColor != -1)
 					{
 						this.file.skipBack(4);
-						this.preloaderBackColor = this.file.readAColor();
+						this.preloaderBackColor = this.file.readAColor('preloaderBackColor');
 					}
-					this.preloaderFrameNumber = this.file.readAInt();
+					this.preloaderFrameNumber = this.file.readAInt('preloaderFrameNumber');
 					this.loadPreloader = true;
 					break;
 				// CHUNK_FRAME
 				case 0x3333:
+					debug('CHUNK_FRAME');
 					// Repere les positions des frames dans le fichier
 					this.frameOffsets[this.frameMaxIndex] = this.file.getFilePointer();
 					var frID = 0;
@@ -493,9 +519,9 @@ CRunApp.prototype =
 					var frSize;
 					while (frID != 0x7F7F)		// CHUNK_LAST
 					{
-						frID = this.file.readAShort();
-						frFlags = this.file.readAShort();
-						frSize = this.file.readAInt();
+						frID = this.file.readAShort('frID');
+						frFlags = this.file.readAShort('frFlags');
+						frSize = this.file.readAInt('frSize');
 
 						if (frSize == 0)
 						{
@@ -509,15 +535,15 @@ CRunApp.prototype =
 								if (this.frameMaxIndex == 0)
 								{
 									this.file.skipBytes(2 * 4);
-									this.firstFrameColor = this.file.readAColor();
+									this.firstFrameColor = this.file.readAColor('firstFrameColor');
 								}
 								break;
 							case 0x3336:
-								this.framePasswords[this.frameMaxIndex] = this.file.readAString();
+								this.framePasswords[this.frameMaxIndex] = this.file.readAString('framePasswords[this.frameMaxIndex]');
 								break;
 							case 0x3349:
-								this.frameEffects[this.frameMaxIndex] = this.file.readAInt();
-								this.frameEffectParams[this.frameMaxIndex] = this.file.readAInt();
+								this.frameEffects[this.frameMaxIndex] = this.file.readAInt('frameEffects[this.frameMaxIndex]');
+								this.frameEffectParams[this.frameMaxIndex] = this.file.readAInt('frameEffectParams[this.frameMaxIndex]');
 								break;
 							// CHUNK_MOSAICIMAGETABLE
 							case 0x3348:
@@ -525,7 +551,7 @@ CRunApp.prototype =
 								var n;
 								for (n = 0; n < number; n++)
 								{
-									var handle = this.file.readAShort();
+									var handle = this.file.readAShort('handle');
 									this.file.skipBytes(4);
 									if (handle != 0)
 									{
@@ -541,7 +567,8 @@ CRunApp.prototype =
 					break;
 				// CHUNK_BINARYFILES
 				case 0x2238:
-					var nFiles = this.file.readAInt();
+					debug('CHUNK_BINARYFILES');
+					var nFiles = this.file.readAInt('nFiles');
 					this.embeddedFiles = new Array(nFiles);
 					for (n = 0; n < nFiles; n++)
 					{
@@ -551,18 +578,22 @@ CRunApp.prototype =
 					break;
 				// CHUNK_IMAGE
 				case 0x6666:
+					debug('CHUNK_IMAGE');
 					this.imageBank.preLoad(this.file);
 					break;
 				// CHUNK_FONT
 				case 0x6667:
+					debug('CHUNK_FONT');
 					this.fontBank.preLoad(this.file);
 					break;
 				// CHUNK_SOUNDS
 				case 0x6668:
+					debug('CHUNK_SOUNDS');
 					this.soundBank.preLoad(this.file);
 					break;
 				// CHUNK_MUSIC
 				case 0x6669:
+					debug('CHUNK_MUSIC');
 					this.musicBank.preLoad(this.file);
 					break;
 			}
@@ -582,16 +613,6 @@ CRunApp.prototype =
 			this.mainSprite = new Sprite();
 		}
 
-	},
-
-	setParentApp: function (pApp, sFrame, options, sprite, width, height)
-	{
-		this.parentApp = pApp;
-		this.parentOptions = options;
-		this.mainSprite = sprite;
-		this.startFrame = sFrame;
-		this.parentWidth = width;
-		this.parentHeight = height;
 	},
 
 	initScreenZoom:     function ()
@@ -1678,51 +1699,51 @@ CRunApp.prototype =
 	loadAppHeader: function ()
 	{
 		this.file.skipBytes(4);
-		this.gaFlags = this.file.readAShort();
-		this.gaNewFlags = this.file.readAShort();
-		this.gaMode = this.file.readAShort();
-		this.gaOtherFlags = this.file.readAShort();
-		this.gaCxWin = this.file.readAShort();
-		this.gaCyWin = this.file.readAShort();
-		this.gaScoreInit = this.file.readAInt();
-		this.gaLivesInit = this.file.readAInt();
+		this.gaFlags = this.file.readAShort('gaFlags');
+		this.gaNewFlags = this.file.readAShort('gaNewFlags');
+		this.gaMode = this.file.readAShort('gaMode');
+		this.gaOtherFlags = this.file.readAShort('gaOtherFlags');
+		this.gaCxWin = this.file.readAShort('gaCxWin');
+		this.gaCyWin = this.file.readAShort('gaCyWin');
+		this.gaScoreInit = this.file.readAInt('gaScoreInit');
+		this.gaLivesInit = this.file.readAInt('gaLivesInit');
 		var n, m;
 		this.pcCtrlType = new Array(CRunApp.MAX_PLAYER);
 		for (n = 0; n < CRunApp.MAX_PLAYER; n++)
-			this.pcCtrlType[n] = this.file.readAShort();
+			this.pcCtrlType[n] = this.file.readAShort('pcCtrlType[n]');
 		this.pcCtrlKeys = new Array(CRunApp.MAX_PLAYER * CRunApp.MAX_KEY);
 		for (n = 0; n < CRunApp.MAX_PLAYER; n++)
 		{
 			for (m = 0; m < CRunApp.MAX_KEY; m++)
 			{
-				this.pcCtrlKeys[n * CRunApp.MAX_KEY + m] = this.file.readAShort();	//CKeyConvert.getFlashKey(file.readAShort());
+				this.pcCtrlKeys[n * CRunApp.MAX_KEY + m] = this.file.readAShort('pcCtrlKeys[n * CRunApp.MAX_KEY + m]');	//CKeyConvert.getFlashKey(file.readAShort());
 			}
 		}
-		this.gaBorderColour = this.file.readAColor();
-		this.gaNbFrames = this.file.readAInt();
-		this.gaFrameRate = this.file.readAInt();
+		this.gaBorderColour = this.file.readAColor('gaBorderColour');
+		this.gaNbFrames = this.file.readAInt('gaNbFrames');
+		this.gaFrameRate = this.file.readAInt('gaFrameRate');
 		this.file.skipBytes(1);
 		this.file.skipBytes(3);
 	},
 
 	loadGlobalValues: function ()
 	{
-		this.nGlobalValuesInit = this.file.readAShort();
+		this.nGlobalValuesInit = this.file.readAShort('nGlobalValuesInit');
 		this.globalValuesInit = new Array(this.nGlobalValuesInit);
 		this.globalValuesInitTypes = new Array(this.nGlobalValuesInit);
 		var n;
 		for (n = 0; n < this.nGlobalValuesInit; n++)
-			this.globalValuesInit[n] = this.file.readAInt();
+			this.globalValuesInit[n] = this.file.readAInt('globalValuesInit[n]');
 		this.file.readBytesAsArray(this.globalValuesInitTypes);
 	},
 
 	loadGlobalStrings: function ()
 	{
-		this.nGlobalStringsInit = this.file.readAInt();
+		this.nGlobalStringsInit = this.file.readAInt('nGlobalStringsInit');
 		this.globalStringsInit = new Array(this.nGlobalStringsInit);
 		var n;
 		for (n = 0; n < this.nGlobalStringsInit; n++)
-			this.globalStringsInit[n] = this.file.readAString();
+			this.globalStringsInit[n] = this.file.readAString('globalStringsInit[n]');
 	},
 
 	loadFrameHandles: function (size)
@@ -1733,7 +1754,7 @@ CRunApp.prototype =
 		var n;
 		for (n = 0; n < this.frameMaxHandle; n++)
 		{
-			this.frameHandleToIndex[n] = this.file.readAShort();
+			this.frameHandleToIndex[n] = this.file.readAShort('frameHandleToIndex[n]');
 		}
 	},
 
@@ -2734,9 +2755,9 @@ CRunFrame.prototype =
 		this.m_wRandomSeed = -1;
 		while (chID != 0x7F7F)
 		{
-			chID = this.app.file.readAShort();
-			chFlags = this.app.file.readAShort();
-			chSize = this.app.file.readAInt();
+			chID = this.app.file.readAShort('CRunFrame chID');
+			chFlags = this.app.file.readAShort('CRunFrame chFlags');
+			chSize = this.app.file.readAInt('CRunFrame chSize');
 			if (chSize == 0)
 			{
 				continue;
@@ -2745,6 +2766,7 @@ CRunFrame.prototype =
 			switch (chID)
 			{
 				case 0x3334:
+					console.log('[CRunFrame] CHUNK_HEADER?');
 					this.loadHeader();
 					if (this.app.parentApp != null && (this.app.parentOptions & CCCA.CCAF_DOCKED) != 0)
 					{
@@ -2760,6 +2782,7 @@ CRunFrame.prototype =
 
 				// CHUNK_MOSAICIMAGETABLE
 				case 0x3348:
+					console.log('[CRunFrame] CHUNK_MOSAICIMAGETABLE');
 					var number = chSize / (3 * 2);
 					this.mosaicHandles = new Array(number);
 					this.mosaicX = new Array(number);
@@ -2768,18 +2791,19 @@ CRunFrame.prototype =
 					var n;
 					for (n = 0; n < number; n++)
 					{
-						this.mosaicHandles[n] = this.app.file.readAShort();
+						this.mosaicHandles[n] = this.app.file.readAShort('mosaicHandles[n]');
 						this.mosaicMaxHandle = Math.max(this.mosaicMaxHandle, this.mosaicHandles[n]);
-						this.mosaicX[n] = this.app.file.readAShort();
-						this.mosaicY[n] = this.app.file.readAShort();
+						this.mosaicX[n] = this.app.file.readAShort('mosaicX[n]');
+						this.mosaicY[n] = this.app.file.readAShort('mosaicY[n]');
 					}
 					this.mosaicMaxHandle++;
 					break;
 
 				// CHUNK_FRAME_HTML5_OPTIONS
 				case 0x334A:
-					this.joystick = this.app.file.readAShort();
-					this.html5Options = this.app.file.readAShort();
+					console.log('[CRunFrame] CHUNK_FRAME_HTML5_OPTIONS');
+					this.joystick = this.app.file.readAShort('joystick');
+					this.html5Options = this.app.file.readAShort('html5Options');
 					break;
 
 				case 0x3342:
@@ -2787,42 +2811,48 @@ CRunFrame.prototype =
 					break;
 
 				case 0x3344:
-					this.m_wRandomSeed = this.app.file.readAShort();
+					this.m_wRandomSeed = this.app.file.readAShort('m_wRandomSeed');
 					break;
 
 				case 0x3347:
-					this.m_dwMvtTimerBase = this.app.file.readAInt();
+					this.m_dwMvtTimerBase = this.app.file.readAInt('m_dwMvtTimerBase');
 					break;
 
 				case 0x3335:
-					this.frameName = this.app.file.readAString();
+					this.frameName = this.app.file.readAString('frameName');
 					break;
 
 				// CHUNK_FRAMEFADEIN
 				case 0x333B:
+					console.log('[CRunFrame] CHUNK_FRAMEFADEIN');
 					this.fadeIn = new CTransitionData();
 					this.fadeIn.load(this.app.file);
 					break;
 
 				// CHUNK_FRAMEFADEOUT
 				case 0x333C:
+					console.log('[CRunFrame] CHUNK_FRAMEFADEOUT');
 					this.fadeOut = new CTransitionData();
 					this.fadeOut.load(this.app.file);
 					break;
 
 				case 0x3341:
+					console.log('[CRunFrame] CHUNK_LAYERS');
 					this.loadLayers();
 					break;
 
 				case 0x3345:
+					console.log('[CRunFrame] CHUNK_LAYER_EFFECTS');
 					this.loadLayerEffects();
 					break;
 
 				case 0x3338:
+					console.log('[CRunFrame] CHUNK_LOList');
 					this.LOList.load(this.app);
 					break;
 
 				case 0x333D:
+					console.log('[CRunFrame] CHUNK_EVENT_PROGRAM');
 					this.evtProg.load(this.app);
 					this.maxObjects = this.evtProg.maxObjects;
 					break;
@@ -2873,7 +2903,7 @@ CRunFrame.prototype =
 
 	loadLayers: function ()
 	{
-		this.nLayers = this.app.file.readAInt();
+		this.nLayers = this.app.file.readAInt('nLayers');
 		this.layers = new Array(this.nLayers);
 
 		var n;
@@ -2889,18 +2919,18 @@ CRunFrame.prototype =
 		var l;
 		for (l = 0; l < this.nLayers; l++)
 		{
-			this.layers[l].effect = this.app.file.readAInt();
-			this.layers[l].effectParam = this.app.file.readAInt();
+			this.layers[l].effect = this.app.file.readAInt('layers[l].effect');
+			this.layers[l].effectParam = this.app.file.readAInt('layers[l].effectParam');
 			this.app.file.skipBytes(12);
 		}
 	},
 
 	loadHeader: function ()
 	{
-		this.leWidth = this.app.file.readAInt();
-		this.leHeight = this.app.file.readAInt();
-		this.leBackground = this.app.file.readAColor();
-		this.leFlags = this.app.file.readAInt();
+		this.leWidth = this.app.file.readAInt('leWidth');
+		this.leHeight = this.app.file.readAInt('leHeight');
+		this.leBackground = this.app.file.readAColor('leBackground');
+		this.leFlags = this.app.file.readAInt('leFlags');
 	}
 }
 
@@ -3662,14 +3692,14 @@ CEmbeddedFile.prototype =
 {
 	preLoad: function ()
 	{
-		var l = this.app.file.readAShort();
-		this.path = this.app.file.readAString(l);
+		var l = this.app.file.readAShort('l');
+		this.path = this.app.file.readAString(l, 'path');
 		var pos = this.path.lastIndexOf("\\");
 		if (pos >= 0)
 		{
 			this.path = this.path.substring(pos + 1);
 		}
-		this.length = this.app.file.readAInt();
+		this.length = this.app.file.readAInt('length');
 		this.offset = this.app.file.getFilePointer();
 		this.app.file.skipBytes(this.length);
 	},

@@ -43,13 +43,13 @@ CLO.prototype =
 {
 	load:        function (file)
 	{
-		this.loHandle = file.readAShort();
-		this.loOiHandle = file.readAShort();
-		this.loX = file.readAInt();
-		this.loY = file.readAInt();
-		this.loParentType = file.readAShort();
-		this.loOiParentHandle = file.readAShort();
-		this.loLayer = file.readAShort();
+		this.loHandle = file.readAShort('loHandle');
+		this.loOiHandle = file.readAShort('loOiHandle');
+		this.loX = file.readAInt('loX');
+		this.loY = file.readAInt('loY');
+		this.loParentType = file.readAShort('loParentType');
+		this.loOiParentHandle = file.readAShort('loOiParentHandle');
+		this.loLayer = file.readAShort('loLayer');
 		file.skipBytes(2);
 	},
 	addInstance: function (num, bi)
@@ -71,7 +71,7 @@ CLOList.prototype =
 {
 	load:            function (app)
 	{
-		this.nIndex = app.file.readAInt();
+		this.nIndex = app.file.readAInt('nIndex');
 		this.list = new Array(this.nIndex);
 		var n;
 		var maxHandles = 0;
@@ -180,12 +180,12 @@ CLayer.prototype =
 {
 	load:                 function (file)
 	{
-		this.dwOptions = file.readAInt();
-		this.xCoef = file.readAFloat();
-		this.yCoef = file.readAFloat();
-		this.nBkdLOs = file.readAInt();
-		this.nFirstLOIndex = file.readAInt();
-		this.pName = file.readAString();
+		this.dwOptions = file.readAInt('dwOptions');
+		this.xCoef = file.readAFloat('xCoef');
+		this.yCoef = file.readAFloat('yCoef');
+		this.nBkdLOs = file.readAInt('nBkdLOs');
+		this.nFirstLOIndex = file.readAInt('nFirstLOIndex');
+		this.pName = file.readAString('pName');
 
 		this.backUp_dwOptions = this.dwOptions;
 		this.backUp_xCoef = this.xCoef;

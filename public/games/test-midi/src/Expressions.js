@@ -33,7 +33,7 @@ CExp.create = function (file)
 {
 	var debut = file.getFilePointer();
 	var exp = null;
-	var c = file.readAInt();
+	var c = file.readAInt('c');
 	switch (c)
 	{
 		case 0x00000000:
@@ -578,27 +578,27 @@ CExp.create = function (file)
 
 		if (c != 0x00000000)
 		{
-			var size = file.readAShort();
+			var size = file.readAShort('size');
 
 			var type;
 			switch (c)
 			{
 				case ((3 << 16) | 0xFFFF):
-					exp.string = file.readAString();
+					exp.string = file.readAString('string');
 					break;
 				case ((0 << 16) | 0xFFFF):
-					exp.value = file.readAInt();
+					exp.value = file.readAInt('value');
 					break;
 				case ((23 << 16) | 0xFFFF):
-					exp.value = file.readADouble();
+					exp.value = file.readADouble('value');
 					break;
 				case ((24 << 16) | 0xFFFF):
 					file.skipBytes(4);
-					exp.number = file.readAShort();
+					exp.number = file.readAShort('number');
 					break;
 				case ((50 << 16) | 0xFFFF):
 					file.skipBytes(4);
-					exp.number = file.readAShort();
+					exp.number = file.readAShort('number');
 					break;
 				default:
 					type = c & 0xFFFF;
@@ -606,15 +606,15 @@ CExp.create = function (file)
 						type = type - 65536;
 					if (type >= 2 || type == COI.OBJ_PLAYER)
 					{
-						exp.oi = file.readShort();
-						exp.oiList = file.readShort();
+						exp.oi = file.readShort('oi');
+						exp.oiList = file.readShort('oiList');
 						switch (c & 0xFFFF0000)
 						{
 							case (16 << 16):		// EXP_EXTVAR
-								exp.number = file.readAShort();
+								exp.number = file.readAShort('number');
 								break;
 							case (19 << 16):		// EXP_EXTVARSTRING			
-								exp.number = file.readAShort();
+								exp.number = file.readAShort('number');
 								break;
 							default:
 								break;

@@ -28,12 +28,12 @@ CDefStrings.prototype =
 {
 	load: function (file)
 	{
-		this.nStrings = file.readAShort();
+		this.nStrings = file.readAShort('nStrings');
 		this.strings = new Array(this.nStrings);
 		var n;
 		for (n = 0; n < this.nStrings; n++)
 		{
-			this.strings[n] = file.readAString();
+			this.strings[n] = file.readAString('strings[n]');
 		}
 	}
 }
@@ -50,15 +50,15 @@ CDefValues.prototype =
 {
     load: function (file, initFlags)
     {
-		this.nValues = file.readAShort();
+		this.nValues = file.readAShort('nValues');
 		this.values = new Array(this.nValues);
 		var n;
 		for (n = 0; n < this.nValues; n++)
 		{
-			this.values[n] = file.readAInt();
+			this.values[n] = file.readAInt('values[n]');
 		}
 		if (initFlags)
-		    this.flags = file.readAInt();
+		    this.flags = file.readAInt('   this.flags');
     }
 }
 

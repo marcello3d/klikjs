@@ -156,7 +156,7 @@ CTransAdvancedScrolling.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -316,7 +316,7 @@ CTransBack.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -452,8 +452,8 @@ CTransBand.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.bpNbBands = file.readAShort();
-			this.bpDirection = file.readAShort();
+			this.bpNbBands = file.readAShort('bpNbBands');
+			this.bpDirection = file.readAShort('bpDirection');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -556,8 +556,8 @@ CTransCell.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwPos = file.readAInt();
-			this.dwPos2 = file.readAInt();
+			this.dwPos = file.readAInt('dwPos');
+			this.dwPos2 = file.readAInt('dwPos2');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -616,7 +616,7 @@ CTransDoor.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.m_direction = file.readAShort();
+			this.m_direction = file.readAShort('m_direction');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -764,9 +764,9 @@ CTransLine.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwPos = file.readAInt();
-			this.dwStyle = file.readAInt();
-			this.dwScrolling = file.readAInt();
+			this.dwPos = file.readAInt('dwPos');
+			this.dwStyle = file.readAInt('dwStyle');
+			this.dwScrolling = file.readAInt('dwScrolling');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -914,7 +914,7 @@ CTransMosaic.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.m_spotPercent = file.readAInt();
+			this.m_spotPercent = file.readAInt('m_spotPercent');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1065,7 +1065,7 @@ CTransOpen.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1152,7 +1152,7 @@ CTransPush.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1264,7 +1264,7 @@ CTransScroll.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.m_direction = file.readAInt();
+			this.m_direction = file.readAInt('m_direction');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1342,9 +1342,9 @@ CTransSquare.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
-			this.dwPos = file.readAInt();
-			this.dwStretch = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
+			this.dwPos = file.readAInt('dwPos');
+			this.dwStretch = file.readAInt('dwStretch');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1418,7 +1418,7 @@ CTransStretch.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1559,7 +1559,7 @@ CTransStretch2.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1849,7 +1849,7 @@ CTransTrame.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -1976,9 +1976,9 @@ CTransTurn.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwPos = file.readAInt();
-			this.dwCheck1 = file.readAInt();
-			this.dwCheck2 = file.readAInt();
+			this.dwPos = file.readAInt('dwPos');
+			this.dwCheck1 = file.readAInt('dwCheck1');
+			this.dwCheck2 = file.readAInt('dwCheck2');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -2050,8 +2050,8 @@ CTransTurn2.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwPos = file.readAInt();
-			this.dwCheck1 = file.readAInt();
+			this.dwPos = file.readAInt('dwPos');
+			this.dwCheck1 = file.readAInt('dwCheck1');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -2134,9 +2134,9 @@ CTransZigZag.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.zpSpotPercent = file.readAInt();
-			this.zpStartPoint = file.readAShort();
-			this.zpDirection = file.readAShort();
+			this.zpSpotPercent = file.readAInt('zpSpotPercent');
+			this.zpStartPoint = file.readAShort('zpStartPoint');
+			this.zpDirection = file.readAShort('zpDirection');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -2376,8 +2376,8 @@ CTransZigZag2.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwStyle = file.readAInt();
-			this.dwPos = file.readAInt();
+			this.dwStyle = file.readAInt('dwStyle');
+			this.dwPos = file.readAInt('dwPos');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)
@@ -2554,7 +2554,7 @@ CTransZoom2.prototype = CServices.extend(new CTrans(),
 	{
 		init:     function (data, file, display, source, dest)
 		{
-			this.dwPos = file.readAInt();
+			this.dwPos = file.readAInt('dwPos');
 			this.start(data, display, source, dest);
 		},
 		stepDraw: function (flag)

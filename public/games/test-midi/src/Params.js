@@ -25,8 +25,8 @@ CParam.create = function (app)
 	var debut = app.file.getFilePointer();
 
 	var param = null;
-	var size = app.file.readAShort();
-	var c = app.file.readAShort();
+	var size = app.file.readAShort('size');
+	var c = app.file.readAShort('c');
 
 	switch (c)
 	{
@@ -239,27 +239,27 @@ function CPositionInfo()
 // ------------------------------------------------------------------------
 function PARAM_2SHORTS(app)
 {
-	this.value1 = app.file.readAShort();
-	this.value2 = app.file.readAShort();
+	this.value1 = app.file.readAShort('value1');
+	this.value2 = app.file.readAShort('value2');
 }
 function PARAM_CMPTIME(app)
 {
-	this.timer = app.file.readAInt();
-	this.loops = app.file.readAInt();
-	this.comparaison = app.file.readAShort();
+	this.timer = app.file.readAInt('timer');
+	this.loops = app.file.readAInt('loops');
+	this.comparaison = app.file.readAShort('comparaison');
 }
 function PARAM_COLOUR(app)
 {
-	this.color = app.file.readAColor();
+	this.color = app.file.readAColor('color');
 }
 function PARAM_EVERY(app)
 {
-	this.delay = app.file.readAInt();
-	this.compteur = app.file.readAInt();
+	this.delay = app.file.readAInt('delay');
+	this.compteur = app.file.readAInt('compteur');
 }
 function PARAM_EXPRESSION(app)
 {
-	this.comparaison = app.file.readAShort();
+	this.comparaison = app.file.readAShort('comparaison');
 
 	var debut = app.file.getFilePointer();
 	var count = 0;
@@ -268,10 +268,10 @@ function PARAM_EXPRESSION(app)
 	while (true)
 	{
 		count++;
-		code = app.file.readAInt();
+		code = app.file.readAInt('code');
 		if (code == 0)
 			break;
-		size = app.file.readAShort();
+		size = app.file.readAShort('size');
 		if (size > 6)
 			app.file.skipBytes(size - 6);
 	}
@@ -284,7 +284,7 @@ function PARAM_EXPRESSION(app)
 }
 function PARAM_EXTENSION(app)
 {
-	var size = app.file.readAShort();
+	var size = app.file.readAShort('size');
 	app.file.skipBytes(4);
 	this.data = 0;
 	if (size > 6)
@@ -300,37 +300,37 @@ PARAM_GROUP.GRPFLAGS_GROUPINACTIVE = 0x0008;
 PARAM_GROUP.GRPFLAGS_GLOBAL = 0x0010;
 function PARAM_GROUP(app)
 {
-	this.grpFlags = app.file.readAShort();
-	this.grpId = app.file.readAShort();
+	this.grpFlags = app.file.readAShort('grpFlags');
+	this.grpId = app.file.readAShort('grpId');
 }
 function PARAM_GROUPOINTER(app)
 {
 	app.file.skipBytes(4);
 	this.pointer = 0;
-	this.id = app.file.readAShort();
+	this.id = app.file.readAShort('id');
 }
 function PARAM_INT(app)
 {
-	this.value = app.file.readAInt();
+	this.value = app.file.readAInt('value');
 	this.value2 = 0;
 }
 function PARAM_KEY(app)
 {
-	this.key = app.file.readAShort();
+	this.key = app.file.readAShort('key');
 }
 function PARAM_OBJECT(app)
 {
-	this.oiList = app.file.readShort();
-	this.oi = app.file.readShort();
-	this.type = app.file.readShort();
+	this.oiList = app.file.readShort('oiList');
+	this.oi = app.file.readShort('oi');
+	this.type = app.file.readShort('type');
 }
 function PARAM_CHILDEVENT(app) {
     app.file.skipBytes(4);
     this.evgOffsetList = 0;
     this.ois = new Array();
     while (true) {
-        var oi = app.file.readShort();
-        var oil = app.file.readShort();
+        var oi = app.file.readShort('       var oi');
+        var oil = app.file.readShort('       var oil');
         if (oi == -1)
             break;
         this.ois.push(oi);
@@ -435,54 +435,54 @@ CPosition.prototype =
 }
 function PARAM_POSITION(app)
 {
-	this.posOINUMParent = app.file.readShort();
-	this.posFlags = app.file.readShort();
-	this.posX = app.file.readShort();
-	this.posY = app.file.readShort();
-	this.posSlope = app.file.readShort();
-	this.posAngle = app.file.readShort();
-	this.posDir = app.file.readAInt();
-	this.posTypeParent = app.file.readShort();
-	this.posOiList = app.file.readShort();
-	this.posLayer = app.file.readShort();
+	this.posOINUMParent = app.file.readShort('posOINUMParent');
+	this.posFlags = app.file.readShort('posFlags');
+	this.posX = app.file.readShort('posX');
+	this.posY = app.file.readShort('posY');
+	this.posSlope = app.file.readShort('posSlope');
+	this.posAngle = app.file.readShort('posAngle');
+	this.posDir = app.file.readAInt('posDir');
+	this.posTypeParent = app.file.readShort('posTypeParent');
+	this.posOiList = app.file.readShort('posOiList');
+	this.posLayer = app.file.readShort('posLayer');
 }
 PARAM_POSITION.prototype = CServices.extend(new CPosition(),
 	{
 	});
 function PARAM_CREATE(app)
 {
-	this.posOINUMParent = app.file.readShort();
-	this.posFlags = app.file.readShort();
-	this.posX = app.file.readShort();
-	this.posY = app.file.readShort();
-	this.posSlope = app.file.readShort();
-	this.posAngle = app.file.readShort();
-	this.posDir = app.file.readAInt();
-	this.posTypeParent = app.file.readShort();
-	this.posOiList = app.file.readShort();
-	this.posLayer = app.file.readShort();
-	this.cdpHFII = app.file.readAShort();
-	this.cdpOi = app.file.readAShort();
+	this.posOINUMParent = app.file.readShort('posOINUMParent');
+	this.posFlags = app.file.readShort('posFlags');
+	this.posX = app.file.readShort('posX');
+	this.posY = app.file.readShort('posY');
+	this.posSlope = app.file.readShort('posSlope');
+	this.posAngle = app.file.readShort('posAngle');
+	this.posDir = app.file.readAInt('posDir');
+	this.posTypeParent = app.file.readShort('posTypeParent');
+	this.posOiList = app.file.readShort('posOiList');
+	this.posLayer = app.file.readShort('posLayer');
+	this.cdpHFII = app.file.readAShort('cdpHFII');
+	this.cdpOi = app.file.readAShort('cdpOi');
 }
 PARAM_CREATE.prototype = CServices.extend(new CPosition(),
 	{
 	});
 function PARAM_SHOOT(app)
 {
-	this.posOINUMParent = app.file.readShort();
-	this.posFlags = app.file.readShort();
-	this.posX = app.file.readShort();
-	this.posY = app.file.readShort();
-	this.posSlope = app.file.readShort();
-	this.posAngle = app.file.readShort();
-	this.posDir = app.file.readAInt();
-	this.posTypeParent = app.file.readShort();
-	this.posOiList = app.file.readShort();
-	this.posLayer = app.file.readShort();
-	this.cdpHFII = app.file.readShort();
-	this.cdpOi = app.file.readShort();
+	this.posOINUMParent = app.file.readShort('posOINUMParent');
+	this.posFlags = app.file.readShort('posFlags');
+	this.posX = app.file.readShort('posX');
+	this.posY = app.file.readShort('posY');
+	this.posSlope = app.file.readShort('posSlope');
+	this.posAngle = app.file.readShort('posAngle');
+	this.posDir = app.file.readAInt('posDir');
+	this.posTypeParent = app.file.readShort('posTypeParent');
+	this.posOiList = app.file.readShort('posOiList');
+	this.posLayer = app.file.readShort('posLayer');
+	this.cdpHFII = app.file.readShort('cdpHFII');
+	this.cdpOi = app.file.readShort('cdpOi');
 	app.file.skipBytes(4);		//cdpFree
-	this.shtSpeed = app.file.readAShort();
+	this.shtSpeed = app.file.readAShort('shtSpeed');
 }
 PARAM_SHOOT.prototype = CServices.extend(new CPosition(),
 	{
@@ -490,50 +490,50 @@ PARAM_SHOOT.prototype = CServices.extend(new CPosition(),
 
 function PARAM_SAMPLE(app)
 {
-	this.sndHandle = app.file.readAShort();
-	this.sndFlags = app.file.readAShort();
+	this.sndHandle = app.file.readAShort('sndHandle');
+	this.sndFlags = app.file.readAShort('sndFlags');
 }
 function PARAM_MUSIC(app)
 {
-	this.sndHandle = app.file.readAShort();
-	this.sndFlags = app.file.readAShort();
+	this.sndHandle = app.file.readAShort('sndHandle');
+	this.sndFlags = app.file.readAShort('sndFlags');
 }
 function PARAM_SHORT(app)
 {
-	this.value = app.file.readAShort();
+	this.value = app.file.readAShort('value');
 }
 function PARAM_STRING(app)
 {
-	this.string = app.file.readAString();
+	this.string = app.file.readAString('string');
 }
 function PARAM_TIME(app)
 {
-	this.timer = app.file.readAInt();
-	this.loops = app.file.readAInt();
+	this.timer = app.file.readAInt('timer');
+	this.loops = app.file.readAInt('loops');
 }
 function PARAM_ZONE(app)
 {
-	this.x1 = app.file.readShort();
-	this.y1 = app.file.readShort();
-	this.x2 = app.file.readShort();
-	this.y2 = app.file.readShort();
+	this.x1 = app.file.readShort('x1');
+	this.y1 = app.file.readShort('y1');
+	this.x2 = app.file.readShort('x2');
+	this.y2 = app.file.readShort('y2');
 }
 function multiVar(app, _global, _double)
 {
-    this.index = app.file.readAInt();
-    this.op = app.file.readAInt();
+    this.index = app.file.readAInt('   this.index');
+    this.op = app.file.readAInt('   this.op');
     this.global = _global;
     if (_double) {
-        this.val = app.file.readADouble();
+        this.val = app.file.readADouble('       this.val');
     } else {
-        this.val = app.file.readAInt();
+        this.val = app.file.readAInt('       this.val');
         app.file.skipBytes(4);
     }
 }
 function PARAM_MULTIPLEVAR(app) {
-    this.flags = app.file.readAInt();
-    this.flagMasks = app.file.readAInt();
-    this.flagValues = app.file.readAInt();
+    this.flags = app.file.readAInt('   this.flags');
+    this.flagMasks = app.file.readAInt('   this.flagMasks');
+    this.flagValues = app.file.readAInt('   this.flagValues');
     this.values = new Array();
     var mask = 1;
     var maskGlobal = 2;

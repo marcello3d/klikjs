@@ -2841,40 +2841,40 @@ CEventProgram.prototype =
 
 			if (code[0] == 0x45 && code[1] == 0x52 && code[2] == 0x3E && code[3] == 0x3E)
 			{
-				this.maxObjects = app.file.readAShort();
+				this.maxObjects = app.file.readAShort('maxObjects');
 				if (this.maxObjects < 300)
 				{
 					this.maxObjects = 300;
 				}
-				this.maxOi = app.file.readAShort();
-				this.nPlayers = app.file.readAShort();
+				this.maxOi = app.file.readAShort('maxOi');
+				this.nPlayers = app.file.readAShort('nPlayers');
 				for (n = 0; n < 7 + COI.OBJ_LAST; n++)
 				{
-					this.nConditions[n] = app.file.readAShort();
+					this.nConditions[n] = app.file.readAShort('nConditions[n]');
 				}
-				this.nQualifiers = app.file.readAShort();
+				this.nQualifiers = app.file.readAShort('nQualifiers');
 				if (this.nQualifiers > 0)
 				{
 					this.qualifiers = new Array(this.nQualifiers);
 					for (n = 0; n < this.nQualifiers; n++)
 					{
 						this.qualifiers[n] = new CLoadQualifiers();
-						this.qualifiers[n].qOi = app.file.readShort();
-						this.qualifiers[n].qType = app.file.readShort();
+						this.qualifiers[n].qOi = app.file.readShort('qualifiers[n].qOi');
+						this.qualifiers[n].qType = app.file.readShort('qualifiers[n].qType');
 					}
 				}
 			}
 			else if (code[0] == 0x45 && code[1] == 0x52 && code[2] == 0x65 && code[3] == 0x73)
 			{
 				app.file.readAInt();
-				this.nEvents = app.file.readAInt();
+				this.nEvents = app.file.readAInt('nEvents');
 				this.events = new Array(this.nEvents);
 				this.eventPos = 0;
 			}
 			else if (code[0] == 0x45 && code[1] == 0x52 && code[2] == 0x65 && code[3] == 0x76)
 			{
 				app.file.readAInt();
-				number = app.file.readAInt();
+				number = app.file.readAInt('number');
 				for (n = 0; n < number; n++)
 				{
 					this.events[eventPos] = CEventGroup.create(app);
@@ -2883,7 +2883,7 @@ CEventProgram.prototype =
 			}
 			else if (code[0] == 0x45 && code[1] == 0x52 && code[2] == 0x6F && code[3] == 0x70)
 			{
-			    var options = app.file.readAInt();
+			    var options = app.file.readAInt('   var options');
 			    if ((options & CEventProgram.EVENTOPTION_BREAKCHILD) != 0)
 			    {
 			        this.defaultEvgFlagsMask |= CEventGroup.EVGFLAGS_BREAK;
@@ -4310,24 +4310,27 @@ function CEventGroup()
 }
 CEventGroup.create = function (app)
 {
+	console.log('[EVENTGROUP]')
 	var debut = app.file.getFilePointer();
 
-	var size = app.file.readShort();
+	var size = app.file.readShort('size');
 	var evg = new CEventGroup();
-	evg.evgNCond = app.file.readAByte();
-	evg.evgNAct = app.file.readAByte();
-	evg.evgFlags = app.file.readAShort();
+	evg.evgNCond = app.file.readAByte('evgNCond');
+	evg.evgNAct = app.file.readAByte('evgNAct');
+	evg.evgFlags = app.file.readAShort('evgFlags');
 	app.file.skipBytes(2);
-	evg.evgInhibit = app.file.readAInt();
-	evg.evgInhibitCpt = app.file.readAInt();
+	evg.evgInhibit = app.file.readAInt('evgInhibit');
+	evg.evgInhibitCpt = app.file.readAInt('evgInhibitCpt');
 
 	evg.evgEvents = new Array(evg.evgNCond + evg.evgNAct);
 	var n;
 	var count = 0;
+	console.log('[EVENTGROUP] read conditions')
 	for (n = 0; n < evg.evgNCond; n++)
 	{
 		evg.evgEvents[count++] = CCnd.create(app);
 	}
+	console.log('[EVENTGROUP] read actions')
 	for (n = 0; n < evg.evgNAct; n++)
 	{
 		evg.evgEvents[count++] = CAct.create(app);

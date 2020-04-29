@@ -71,12 +71,12 @@ COI.prototype =
 {
 	loadHeader:   function (file)
 	{
-		this.oiHandle = file.readAShort();
-		this.oiType = file.readAShort();
-		this.oiFlags = file.readAShort();
+		this.oiHandle = file.readAShort('oiHandle');
+		this.oiType = file.readAShort('oiType');
+		this.oiFlags = file.readAShort('oiFlags');
 		file.skipBytes(2);
-		this.oiInkEffect = file.readAInt();
-		this.oiInkEffectParam = file.readAInt();
+		this.oiInkEffect = file.readAInt('oiInkEffect');
+		this.oiInkEffectParam = file.readAInt('oiInkEffectParam');
 	},
 	load:         function (file)
 	{
@@ -124,7 +124,7 @@ COIList.prototype =
 	preLoad:         function (file)
 	{
 		// Alloue la table de OI
-		this.oiMaxIndex = file.readAInt();
+		this.oiMaxIndex = file.readAInt('oiMaxIndex');
 		this.ois = new Array(this.oiMaxIndex);
 
 		// Explore les chunks
@@ -138,9 +138,9 @@ COIList.prototype =
 			var posEnd;
 			while (chID != 0x7F7F)
 			{
-				chID = file.readAShort();
-				chFlags = file.readAShort();
-				chSize = file.readAInt();
+				chID = file.readAShort('chID');
+				chFlags = file.readAShort('chFlags');
+				chSize = file.readAInt('chSize');
 				if (chSize == 0)
 					continue;
 				posEnd = file.getFilePointer() + chSize;
@@ -154,7 +154,7 @@ COIList.prototype =
 							this.oiMaxHandle = (this.ois[index].oiHandle + 1);
 						break;
 					case 0x4445:
-						this.ois[index].oiName = file.readAString();
+						this.ois[index].oiName = file.readAString('ois[index].oiName');
 						break;
 					case 0x4446:
 						this.ois[index].oiFileOffset = file.getFilePointer();
@@ -300,11 +300,11 @@ COCBackground.prototype =
 	load: function (file, type)
 	{
 		file.skipBytes(4);		// ocDWSize
-		this.ocObstacleType = file.readAShort();
-		this.ocColMode = file.readAShort();
-		this.ocCx = file.readAInt();
-		this.ocCy = file.readAInt();
-		this.ocImage = file.readAShort();
+		this.ocObstacleType = file.readAShort('ocObstacleType');
+		this.ocColMode = file.readAShort('ocColMode');
+		this.ocCx = file.readAInt('ocCx');
+		this.ocCy = file.readAInt('ocCy');
+		this.ocImage = file.readAShort('ocImage');
 	},
 
 	enumElements: function (enumImages, enumFonts)
@@ -341,33 +341,33 @@ COCQBackdrop.prototype =
 	load: function (file, type)
 	{
 		file.skipBytes(4);
-		this.ocObstacleType = file.readAShort();
-		this.ocColMode = file.readAShort();
-		this.ocCx = file.readAInt();
-		this.ocCy = file.readAInt();
-		this.ocBorderSize = file.readAShort();
-		this.ocBorderColor = file.readAColor();
-		this.ocShape = file.readAShort();
+		this.ocObstacleType = file.readAShort('ocObstacleType');
+		this.ocColMode = file.readAShort('ocColMode');
+		this.ocCx = file.readAInt('ocCx');
+		this.ocCy = file.readAInt('ocCy');
+		this.ocBorderSize = file.readAShort('ocBorderSize');
+		this.ocBorderColor = file.readAColor('ocBorderColor');
+		this.ocShape = file.readAShort('ocShape');
 
-		this.ocFillType = file.readAShort();
+		this.ocFillType = file.readAShort('ocFillType');
 		if (this.ocShape == 1)
 		{
-			this.ocLineFlags = file.readAShort();
+			this.ocLineFlags = file.readAShort('ocLineFlags');
 		}
 		else
 		{
 			switch (this.ocFillType)
 			{
 				case 1:
-					this.ocColor1 = this.ocColor2 = file.readAColor();
+					this.ocColor1 = this.ocColor2 = file.readAColor('ocColor1');
 					break;
 				case 2:
-					this.ocColor1 = file.readAColor();
-					this.ocColor2 = file.readAColor();
-					this.ocGradientFlags = file.readAInt();
+					this.ocColor1 = file.readAColor('ocColor1');
+					this.ocColor2 = file.readAColor('ocColor2');
+					this.ocGradientFlags = file.readAInt('ocGradientFlags');
 					break;
 				case 3:
-					this.ocImage = file.readAShort();
+					this.ocImage = file.readAShort('ocImage');
 					break;
 			}
 		}
@@ -466,26 +466,26 @@ CObjectCommon.prototype =
 		// Lis le header
 		var n;
 		file.skipBytes(4);
-		file.skipBytes(2);      // var oMovements = file.readAShort();
-		var oData = file.readAShort();  // var oAnimations = file.readAShort();
+		file.skipBytes(2);      // var oMovements = file.readAShort('skipBytes(2);      // var oMovements');
+		var oData = file.readAShort('oData');  // var oAnimations = file.readAShort(' // var oAnimations');
 		file.skipBytes(2);
-		var oCounter = file.readAShort();
-		var oAnimations = file.readAShort(); // var oData = file.readAShort();
-		var oMovements = file.readAShort();    // file.skipBytes(2);
-		this.ocOEFlags = file.readAInt();
+		var oCounter = file.readAShort('oCounter');
+		var oAnimations = file.readAShort('oAnimations'); // var oData = file.readAShort('// var oData');
+		var oMovements = file.readAShort('oMovements');    // file.skipBytes(2);
+		this.ocOEFlags = file.readAInt('ocOEFlags');
 		for (n = 0; n < 8; n++)
 		{
-			this.ocQualifiers[n] = file.readShort();
+			this.ocQualifiers[n] = file.readShort('ocQualifiers[n]');
 		}
-		this.ocOEPrefs = file.readAShort(); // var oExtension = file.readAShort();
-		var oValues = file.readAShort();
-		var oStrings = file.readAShort();
-		this.ocFlags2 = file.readAShort();
-		var oExtension = file.readAShort(); // this.ocOEPrefs = file.readAShort();
-		this.ocIdentifier = file.readAInt();
-		this.ocBackColor = file.readAColor();
-		var oFadeIn = file.readAInt();
-		var oFadeOut = file.readAInt();
+		this.ocOEPrefs = file.readAShort('ocOEPrefs'); // var oExtension = file.readAShort('// var oExtension');
+		var oValues = file.readAShort('oValues');
+		var oStrings = file.readAShort('oStrings');
+		this.ocFlags2 = file.readAShort('ocFlags2');
+		var oExtension = file.readAShort('oExtension'); // this.ocOEPrefs = file.readAShort('// this.ocOEPrefs');
+		this.ocIdentifier = file.readAInt('ocIdentifier');
+		this.ocBackColor = file.readAColor('ocBackColor');
+		var oFadeIn = file.readAInt('oFadeIn');
+		var oFadeOut = file.readAInt('oFadeOut');
 		this.ocFadeIn = null;
 		this.ocFadeOut = null;
 
@@ -522,11 +522,11 @@ CObjectCommon.prototype =
 		if (oExtension != 0)
 		{
 			file.seek(debut + oExtension);
-			var size = file.readAInt();
+			var size = file.readAInt('size');
 			file.skipBytes(4);
-			this.ocVersion = file.readAInt();
-			this.ocID = file.readAInt();
-			this.ocPrivate = file.readAInt();
+			this.ocVersion = file.readAInt('ocVersion');
+			this.ocID = file.readAInt('ocID');
+			this.ocPrivate = file.readAInt('ocPrivate');
 			size -= 20;
 			if (size != 0)
 			{
@@ -609,13 +609,13 @@ CDefCCA.prototype =
 	load:         function (file)
 	{
 		file.skipBytes(4);
-		this.odCx = file.readAInt();
-		this.odCy = file.readAInt();
-		this.odVersion = file.readAShort();
-		this.odNStartFrame = file.readAShort();
-		this.odOptions = file.readAInt();
+		this.odCx = file.readAInt('odCx');
+		this.odCy = file.readAInt('odCy');
+		this.odVersion = file.readAShort('odVersion');
+		this.odNStartFrame = file.readAShort('odNStartFrame');
+		this.odOptions = file.readAInt('odOptions');
 		file.skipBytes(4 + 4);                  // odFree+pad bytes
-		this.odName = file.readAString();
+		this.odName = file.readAString('odName');
 	},
 	enumElements: function (enumImages, enumFonts)
 	{
@@ -635,9 +635,9 @@ CDefCounter.prototype =
 	load:         function (file)
 	{
 		file.skipBytes(2);
-		this.ctInit = file.readAInt();
-		this.ctMini = file.readAInt();
-		this.ctMaxi = file.readAInt();
+		this.ctInit = file.readAInt('ctInit');
+		this.ctMini = file.readAInt('ctMini');
+		this.ctMaxi = file.readAInt('ctMaxi');
 	},
 	enumElements: function (enumImages, enumFonts)
 	{
@@ -678,12 +678,12 @@ CDefCounters.prototype =
 	load: function (file)
 	{
 		file.skipBytes(4);
-		this.odCx = file.readAInt();
-		this.odCy = file.readAInt();
-		this.odPlayer = file.readAShort();
-		this.odDisplayType = file.readAShort();
-		this.odDisplayFlags = file.readAShort();
-		this.odFont = file.readAShort();
+		this.odCx = file.readAInt('odCx');
+		this.odCy = file.readAInt('odCy');
+		this.odPlayer = file.readAShort('odPlayer');
+		this.odDisplayType = file.readAShort('odDisplayType');
+		this.odDisplayFlags = file.readAShort('odDisplayFlags');
+		this.odFont = file.readAShort('odFont');
 
 		switch (this.odDisplayType)
 		{
@@ -691,34 +691,34 @@ CDefCounters.prototype =
 				break;
 			case 1:
 			case 4:
-				this.nFrames = file.readAShort();
+				this.nFrames = file.readAShort('nFrames');
 				this.frames = new Array(this.nFrames);
 				var n;
 				for (n = 0; n < this.nFrames; n++)
 				{
-					this.frames[n] = file.readAShort();
+					this.frames[n] = file.readAShort('frames[n]');
 				}
 				break;
 			case 2:
 			case 3:
 			case 5:
-				this.ocBorderSize = file.readAShort();
-				this.ocBorderColor = file.readAColor();
-				this.ocShape = file.readAShort();
-				this.ocFillType = file.readAShort();
+				this.ocBorderSize = file.readAShort('ocBorderSize');
+				this.ocBorderColor = file.readAColor('ocBorderColor');
+				this.ocShape = file.readAShort('ocShape');
+				this.ocFillType = file.readAShort('ocFillType');
 				if (this.ocShape == 1)
-					this.ocLineFlags = file.readAShort();
+					this.ocLineFlags = file.readAShort('ocLineFlags');
 				else
 				{
 					switch (this.ocFillType)
 					{
 						case 1:
-							this.ocColor1 = file.readAColor();
+							this.ocColor1 = file.readAColor('ocColor1');
 							break;
 						case 2:
-							this.ocColor1 = file.readAColor();
-							this.ocColor2 = file.readAColor();
-							this.ocGradientFlags = file.readAInt();
+							this.ocColor1 = file.readAColor('ocColor1');
+							this.ocColor2 = file.readAColor('ocColor2');
+							this.ocGradientFlags = file.readAInt('ocGradientFlags');
 							break;
 						case 3:
 							break;
@@ -780,16 +780,16 @@ CDefRtf.prototype =
 {
 	load:         function (file)
 	{
-		this.odDWSize = file.readAInt();
-		this.odVersion = file.readAInt();
-		this.odOptions = file.readAInt();
-		this.odBackColor = file.readAColor();
-		this.odCx = file.readAInt();
-		this.odCy = file.readAInt();
+		this.odDWSize = file.readAInt('odDWSize');
+		this.odVersion = file.readAInt('odVersion');
+		this.odOptions = file.readAInt('odOptions');
+		this.odBackColor = file.readAColor('odBackColor');
+		this.odCx = file.readAInt('odCx');
+		this.odCy = file.readAInt('odCy');
 
 		file.skipBytes(4);
-		var size = file.readAInt();
-		this.text = file.readAString(size);
+		var size = file.readAInt('text size');
+		this.text = file.readAString(size, 'text');
 	},
 	enumElements: function (enumImages, enumFonts)
 	{
@@ -816,10 +816,10 @@ CDefText.prototype =
 {
 	load:         function (file)
 	{
-		this.tsFont = file.readShort();
-		this.tsFlags = file.readAShort();
-		this.tsColor = file.readAColor();
-		this.tsText = file.readAString();
+		this.tsFont = file.readShort('tsFont');
+		this.tsFlags = file.readAShort('tsFlags');
+		this.tsColor = file.readAColor('tsColor');
+		this.tsText = file.readAString('tsText');
 	},
 	enumElements: function (enumImages, enumFonts)
 	{
@@ -850,16 +850,16 @@ CDefTexts.prototype =
 	{
 		var debut = file.getFilePointer();
 		file.skipBytes(4);          // Size
-		this.otCx = file.readAInt();
-		this.otCy = file.readAInt();
-		this.otNumberOfText = file.readAInt();
+		this.otCx = file.readAInt('otCx');
+		this.otCy = file.readAInt('otCy');
+		this.otNumberOfText = file.readAInt('otNumberOfText');
 
 		this.otTexts = new Array(this.otNumberOfText);
 		var offsets = new Array(this.otNumberOfText);
 		var n;
 		for (n = 0; n < this.otNumberOfText; n++)
 		{
-			offsets[n] = file.readAInt();
+			offsets[n] = file.readAInt('offsets[n]');
 		}
 		for (n = 0; n < this.otNumberOfText; n++)
 		{

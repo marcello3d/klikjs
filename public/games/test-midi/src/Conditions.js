@@ -29,9 +29,9 @@ CCnd.create = function (app)
 {
 	var debut = app.file.getFilePointer();
 
-	var size = app.file.readAShort();
+	var size = app.file.readAShort('size');
 	var cnd = null;
-	var c = app.file.readAInt();
+	var c = app.file.readAInt('c');
 	switch (c)
 	{
 	    case ((-43 << 16) | 0xFFFF):
@@ -480,13 +480,13 @@ CCnd.create = function (app)
 	if (cnd != null)
 	{
 		cnd.evtCode = c;
-		cnd.evtOi = app.file.readShort();
-		cnd.evtOiList = app.file.readShort();
-		cnd.evtFlags = app.file.readAByte();
-		cnd.evtFlags2 = app.file.readAByte();
-		cnd.evtNParams = app.file.readAByte();
-		cnd.evtDefType = app.file.readAByte();
-		cnd.evtIdentifier = app.file.readAShort();
+		cnd.evtOi = app.file.readShort('evtOi');
+		cnd.evtOiList = app.file.readShort('evtOiList');
+		cnd.evtFlags = app.file.readAByte('evtFlags');
+		cnd.evtFlags2 = app.file.readAByte('evtFlags2');
+		cnd.evtNParams = app.file.readAByte('evtNParams');
+		cnd.evtDefType = app.file.readAByte('evtDefType');
+		cnd.evtIdentifier = app.file.readAShort('evtIdentifier');
 
 		if (cnd.evtNParams > 0)
 		{

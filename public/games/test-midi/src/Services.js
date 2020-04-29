@@ -706,6 +706,13 @@ if (bUseBlob)
 }
 req = null;
 
+
+function debug(type, value, message) {
+	if (message) {
+		console.info('[READ] ' + type + ': ' + message+'=' + value + (typeof value === 'number' ? ' (0x' + value.toString(16) + ')' : ''));
+	}
+}
+
 function CFile()
 {
 	this.ccfBytes = "";
@@ -717,9 +724,11 @@ function CFile()
 CFile.prototype =
 {
 
-	readUnsignedByte: function ()
+	readUnsignedByte: function (message)
 	{
-		return this.ccfBytes.charCodeAt(this.pointer++) & 0xFF;
+		var b = this.ccfBytes.charCodeAt(this.pointer++) & 0xFF;
+		debug('readUnsignedByte', b, message);
+		return b;
 	},
 	getChecksum:      function ()
 	{
@@ -906,48 +915,54 @@ CFile.prototype =
 		return this.pointer >= this.end;
 	},
 
-	readInString: function (len)
+	readInString: function (len, message)
 	{
 		var n, s = "";
 		for (n = 0; n < len; n++)
 			s += String.fromCharCode(this.readUnsignedByte());
+		debug('readInString', s, message);
 		return s;
 	},
 
-	readAByte: function ()
+	readAByte: function (message)
 	{
-		return this.readUnsignedByte();
+		var b = this.readUnsignedByte();
+		debug('readAByte', b, message);
+		return b;
 	},
 
-	readAShort: function ()
+	readAShort: function (message)
 	{
 		var b1, b2;
 		b1 = this.readUnsignedByte();
 		b2 = this.readUnsignedByte();
-		return b2 * 256 + b1;
+		var s = b2 * 256 + b1;
+		debug('readAShort', s, message);
+		return s;
 	},
 
-	readShort: function ()
+	readShort: function (message)
 	{
 		var b1, b2;
 		b1 = this.readUnsignedByte();
 		b2 = this.readUnsignedByte();
 		var value = b2 * 256 + b1;
-		if (value < 32768)
-			return value;
-		else
-			return value - 65536;
+		var s = value < 32768 ? value : value - 65536;
+		debug('readShort', s, message);
+		return s;
 	},
 
-	readAChar: function ()
+	readAChar: function (message)
 	{
 		var b1, b2;
 		b1 = this.readUnsignedByte();
 		b2 = this.readUnsignedByte();
-		return (b2 * 256 + b1);
+		var s = b2 * 256 + b1;
+		debug('readAChar', String.fromCharCode(s), message);
+		return s;
 	},
 
-	readACharArray: function (size)
+	readACharArray: function (size, message)
 	{
 		var c = new Array();
 		var b1, b2;
@@ -958,10 +973,11 @@ CFile.prototype =
 			b2 = this.readUnsignedByte();
 			c[n] = (b2 * 256 + b1);
 		}
+		debug('readACharArray('+size+')', c, message);
 		return c;
 	},
 
-	readAInt: function ()
+	readAInt: function (message)
 	{
 		var b1, b2, b3, b4;
 		b1 = this.readUnsignedByte();
@@ -969,14 +985,13 @@ CFile.prototype =
 		b3 = this.readUnsignedByte();
 		b4 = this.readUnsignedByte();
 		var value = b4 * 0x01000000 + b3 * 0x00010000 + b2 * 0x00000100 + b1;
-		if (value <= 0x7FFFFFFF)
-			return value;
-		else
-			return value - 0x100000000;
+		var i = value <= 0x7FFFFFFF ? value : value - 0x100000000;
+		debug('readAInt', i, message);
+		return i;
 
 	},
 
-	readAColor: function ()
+	readAColor: function (message)
 	{
 		var b1, b2, b3;
 		var c;
@@ -987,10 +1002,11 @@ CFile.prototype =
 		this.readUnsignedByte();
 
 		c = b1 * 0x00010000 + b2 * 0x00000100 + b3;
+		debug('readAColor', c, message);
 		return c;
 	},
 
-	readAFloat: function ()
+	readAFloat: function (message)
 	{
 		var b1, b2, b3, b4;
 
@@ -1003,10 +1019,12 @@ CFile.prototype =
 		{
 			total -= 0xFFFFFFFF;
 		}
-		return total / 65536.0;
+		var f = total / 65536.0;
+		debug('readAFloat', f, message);
+		return f;
 	},
 
-	readADouble: function ()
+	readADouble: function (message)
 	{
 		var b1, b2, b3, b4, b5, b6, b7, b8;
 
@@ -1024,18 +1042,23 @@ CFile.prototype =
 		{
 			total -= 0xFFFFFFFFFFFFFFFF;
 		}
-		return total / 0x100000000;
+		var d = total / 0x100000000;
+		debug('readADouble', d, message);
+		return d;
 	},
 
-	readAString:    function (length)
+	readAString:    function (length, message)
 	{
 		var string = "";
 		if (!this.bUnicode)
 		{
-			if (arguments.length < 1)
+			if (typeof length !== 'number')
 			{
 				if (this.isEOF())
+				{
+					debug('readAString', string, length);
 					return string;
+				}
 
 				var begin = this.pointer;
 				var b = this.readUnsignedByte();
@@ -1048,6 +1071,7 @@ CFile.prototype =
 				string = this.readAString(stringLength);
 				this.readUnsignedByte();
 
+				debug('readAString', string, length);
 				return string;
 			}
 			else
@@ -1062,15 +1086,19 @@ CFile.prototype =
 					string += String.fromCharCode(c);
 				}
 				this.pointer = begin + length;
+				debug('readAString', string, message);
 				return string;
 			}
 		}
 		else
 		{
-			if (arguments.length < 1)
+			if (typeof length !== 'number')
 			{
 				if (this.isEOF())
+				{
+					debug('readAString', string, length);
 					return string;
+				}
 
 				var begin = this.pointer;
 
@@ -1085,6 +1113,7 @@ CFile.prototype =
 				this.readUnsignedByte();
 				this.readUnsignedByte();
 
+				debug('readAString', string, length);
 				return string;
 			}
 			else
@@ -1100,11 +1129,13 @@ CFile.prototype =
 					string += String.fromCharCode(c);
 				}
 				this.pointer = begin + length * 2;
+
+				debug('readAString', string, message);
 				return string;
 			}
 		}
 	},
-	readAStringEOL: function ()
+	readAStringEOL: function (message)
 	{
 		var debut = this.pointer;
 		var b;
@@ -1118,9 +1149,9 @@ CFile.prototype =
 			if (this.isEOF())
 				return;
 
-			b = this.readUnsignedByte();
+			b = this.readUnsignedByte('b');
 			while (b != 10 && b != 13 && !this.isEOF())
-				b = this.readUnsignedByte();
+				b = this.readUnsignedByte('b');
 
 			end = this.pointer;
 			this.pointer = debut;
@@ -1135,7 +1166,7 @@ CFile.prototype =
 			if (b == 10 || b == 13)
 			{
 				this.readUnsignedByte();
-				bb = this.readAByte();
+				bb = this.readAByte('bb');
 				if (b == 10 && bb != 13)
 				{
 					this.pointer--;
@@ -1145,6 +1176,7 @@ CFile.prototype =
 					this.pointer--;
 				}
 			}
+			debug('readAStringEOL', ret, message);
 			return ret;
 		}
 		else
@@ -1173,11 +1205,12 @@ CFile.prototype =
 				if (b == 13 && bb != 10)
 					this.pointer -= 2;
 			}
+			debug('readAStringEOL', ret, message);
 			return ret;
 		}
 	},
 
-	skipAString: function ()
+	skipAString: function (message)
 	{
 		var b;
 		if (this.bUnicode == false)
@@ -1194,6 +1227,7 @@ CFile.prototype =
 				b = this.readAChar();
 			} while (b != 0 && !this.EOF());
 		}
+		debug('skipAString', '', message);
 	},
 
 	getFilePointer: function ()
@@ -1219,15 +1253,16 @@ CFile.prototype =
 		this.pointer = pos;
 	},
 
-	readBytesAsArray: function (a)
+	readBytesAsArray: function (a, message)
 	{
 		var n;
 		var size = a.length;
 		for (n = 0; n < size; n++)
 			a[n] = this.readUnsignedByte();
+		debug('readBytesAsArray', a, message);
 	},
 
-	readBuffer: function (size)
+	readBuffer: function (size, message)
 	{
 		var buffer = new Array();
 		var i;
@@ -1235,6 +1270,7 @@ CFile.prototype =
 		for (i = 0; i < size; i++)
 			buffer[i] = this.readUnsignedByte();
 
+		debug('readBuffer', buffer, message);
 		return buffer;
 	},
 
@@ -1356,10 +1392,10 @@ CRect.prototype =
 {
 	load: function (file)
 	{
-		this.left = file.readAInt();
-		this.top = file.readAInt();
-		this.right = file.readAInt();
-		this.bottom = file.readAInt();
+		this.left = file.readAInt('left');
+		this.top = file.readAInt('top');
+		this.right = file.readAInt('right');
+		this.bottom = file.readAInt('bottom');
 	},
 
 	copyRect: function (srce)
@@ -1461,31 +1497,31 @@ CFontInfo.prototype =
 	},
 	readLogFont:   function (file)
 	{
-		this.lfHeight = file.readAInt();
+		this.lfHeight = file.readAInt('lfHeight');
 		if (this.lfHeight < 0)
 			this.lfHeight = -this.lfHeight;
 		file.skipBytes(12);
-		this.lfWeight = file.readAInt();
-		this.lfItalic = file.readAByte();
-		this.lfUnderline = file.readAByte();
-		this.lfStrikeOut = file.readAByte();
+		this.lfWeight = file.readAInt('lfWeight');
+		this.lfItalic = file.readAByte('lfItalic');
+		this.lfUnderline = file.readAByte('lfUnderline');
+		this.lfStrikeOut = file.readAByte('lfStrikeOut');
 		file.skipBytes(5);
-		this.lfFaceName = file.readAString(32);
+		this.lfFaceName = file.readAString(32, 'lfFaceName');
 	},
 	readLogFont16: function (file)
 	{
-		this.lfHeight = file.readShort();
+		this.lfHeight = file.readShort('lfHeight');
 		if (this.lfHeight < 0)
 			this.lfHeight = -this.lfHeight;
 		file.skipBytes(6);
-		this.lfWeight = file.readAShort();
-		this.lfItalic = file.readAByte();
-		this.lfUnderline = file.readAByte();
-		this.lfStrikeOut = file.readAByte();
+		this.lfWeight = file.readAShort('lfWeight');
+		this.lfItalic = file.readAByte('lfItalic');
+		this.lfUnderline = file.readAByte('lfUnderline');
+		this.lfStrikeOut = file.readAByte('lfStrikeOut');
 		file.skipBytes(5);
 		var oldUnicode = file.bUnicode;
 		file.bUnicode = false;
-		this.lfFaceName = file.readAString(32);
+		this.lfFaceName = file.readAString(32, 'lfFaceName');
 		file.bUnicode = oldUnicode;
 	}
 }
@@ -1579,7 +1615,7 @@ CIni.prototype =
 					}
 					while (cFile.isEOF() == false)
 					{
-						var currentLine = cFile.readAStringEOL();
+						var currentLine = cFile.readAStringEOL('currentLine');
 						if (utf8)
 						    currentLine = this.decodeUtf8(currentLine);
 						if (currentLine.substring(0, 1) == "<")

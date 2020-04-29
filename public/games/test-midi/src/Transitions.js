@@ -36,15 +36,15 @@ CTransitionData.prototype =
 		var debut = file.getFilePointer();
 
 		file.skipBytes(4);
-		this.transID = file.readAInt();
-		this.transDuration = file.readAInt();
-		this.transFlags = file.readAInt();
-		this.transColor = file.readAColor();
+		this.transID = file.readAInt('transID');
+		this.transDuration = file.readAInt('transDuration');
+		this.transFlags = file.readAInt('transFlags');
+		this.transColor = file.readAColor('transColor');
 
-		var nameOffset = file.readAInt();
-		var paramOffset = file.readAInt();
+		var nameOffset = file.readAInt('nameOffset');
+		var paramOffset = file.readAInt('paramOffset');
 		file.seek(debut + nameOffset);
-		this.dllName = file.readAString();
+		this.dllName = file.readAString('dllName');
 		this.dllName = this.dllName.substr(0, this.dllName.indexOf('.'));
 		this.dataOffset = (debut + paramOffset);
 	}

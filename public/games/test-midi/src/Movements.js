@@ -62,25 +62,25 @@ CMoveDefList.prototype =
 	load: function (file)
 	{
 		var debut = file.getFilePointer();
-		this.nMovements = file.readAInt();
+		this.nMovements = file.readAInt('nMovements');
 		this.moveList = new Array(this.nMovements);
 		var n;
 		for (n = 0; n < this.nMovements; n++)
 		{
 			file.seek(debut + 4 + 16 * n);
 
-			var moduleNameOffset = file.readAInt();
-			var mvtID = file.readAInt();
-			var dataOffset = file.readAInt();
-			var dataLength = file.readAInt();
+			var moduleNameOffset = file.readAInt('moduleNameOffset');
+			var mvtID = file.readAInt('mvtID');
+			var dataOffset = file.readAInt('dataOffset');
+			var dataLength = file.readAInt('dataLength');
 
 			file.seek(debut + dataOffset);
-			var control = file.readAShort();
-			var type = file.readAShort();
-			var move = file.readAByte();
-			var mo = file.readAByte();
+			var control = file.readAShort('control');
+			var type = file.readAShort('type');
+			var move = file.readAByte('move');
+			var mo = file.readAByte('mo');
 			file.skipBytes(2);
-			var dirAtStart = file.readAInt();
+			var dirAtStart = file.readAInt('dirAtStart');
 			switch (type)
 			{
 				case 0:
@@ -113,7 +113,7 @@ CMoveDefList.prototype =
 			if (type == 14)
 			{
 				file.seek(debut + moduleNameOffset);
-				var name = file.readAString();
+				var name = file.readAString('name');
 				name = name.substring(0, name.length - 4);
 				name = name.toLowerCase();
 				this.moveList[n].setModuleName(name, mvtID);
@@ -136,11 +136,11 @@ CMoveDefBall.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mbSpeed = file.readAShort();
-			this.mbBounce = file.readAShort();
-			this.mbAngles = file.readAShort();
-			this.mbSecurity = file.readAShort();
-			this.mbDecelerate = file.readAShort();
+			this.mbSpeed = file.readAShort('mbSpeed');
+			this.mbBounce = file.readAShort('mbBounce');
+			this.mbAngles = file.readAShort('mbAngles');
+			this.mbSecurity = file.readAShort('mbSecurity');
+			this.mbDecelerate = file.readAShort('mbDecelerate');
 		}
 	});
 
@@ -158,11 +158,11 @@ CMoveDefGeneric.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mgSpeed = file.readAShort();
-			this.mgAcc = file.readAShort();
-			this.mgDec = file.readAShort();
-			this.mgBounceMult = file.readAShort();
-			this.mgDir = file.readAInt();
+			this.mgSpeed = file.readAShort('mgSpeed');
+			this.mgAcc = file.readAShort('mgAcc');
+			this.mgDec = file.readAShort('mgDec');
+			this.mgBounceMult = file.readAShort('mgBounceMult');
+			this.mgDir = file.readAInt('mgDir');
 		}
 	});
 
@@ -180,11 +180,11 @@ CMoveDefMouse.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mmDx = file.readShort();
-			this.mmFx = file.readShort();
-			this.mmDy = file.readShort();
-			this.mmFy = file.readShort();
-			this.mmFlags = file.readAShort();
+			this.mmDx = file.readShort('mmDx');
+			this.mmFx = file.readShort('mmFx');
+			this.mmDy = file.readShort('mmDy');
+			this.mmFy = file.readShort('mmFy');
+			this.mmFlags = file.readAShort('mmFlags');
 		}
 	});
 
@@ -204,12 +204,12 @@ CMoveDefPath.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mtNumber = file.readAShort();
-			this.mtMinSpeed = file.readAShort();
-			this.mtMaxSpeed = file.readAShort();
-			this.mtLoop = file.readAByte();
-			this.mtRepos = file.readAByte();
-			this.mtReverse = file.readAByte();
+			this.mtNumber = file.readAShort('mtNumber');
+			this.mtMinSpeed = file.readAShort('mtMinSpeed');
+			this.mtMaxSpeed = file.readAShort('mtMaxSpeed');
+			this.mtLoop = file.readAByte('mtLoop');
+			this.mtRepos = file.readAByte('mtRepos');
+			this.mtReverse = file.readAByte('mtReverse');
 			file.skipBytes(1);
 
 			this.steps = new Array(this.mtNumber);
@@ -220,7 +220,7 @@ CMoveDefPath.prototype = CServices.extend(new CMoveDef(),
 				debut = file.getFilePointer();
 				this.steps[n] = new CPathStep();
 				file.readUnsignedByte();
-				next = file.readUnsignedByte();
+				next = file.readUnsignedByte('next');
 				this.steps[n].load(file);
 				file.seek(debut + next);
 			}
@@ -245,15 +245,15 @@ CPathStep.prototype =
 {
 	load: function (file)
 	{
-		this.mdSpeed = file.readAByte();
-		this.mdDir = file.readAByte();
-		this.mdDx = file.readShort();
-		this.mdDy = file.readShort();
-		this.mdCosinus = file.readShort();
-		this.mdSinus = file.readShort();
-		this.mdLength = file.readAShort();
-		this.mdPause = file.readAShort();
-		var name = file.readAString();
+		this.mdSpeed = file.readAByte('mdSpeed');
+		this.mdDir = file.readAByte('mdDir');
+		this.mdDx = file.readShort('mdDx');
+		this.mdDy = file.readShort('mdDy');
+		this.mdCosinus = file.readShort('mdCosinus');
+		this.mdSinus = file.readShort('mdSinus');
+		this.mdLength = file.readAShort('mdLength');
+		this.mdPause = file.readAShort('mdPause');
+		var name = file.readAString('name');
 		if (name.length > 0)
 			this.mdName = name;
 	}
@@ -274,12 +274,12 @@ CMoveDefPlatform.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mpSpeed = file.readAShort();
-			this.mpAcc = file.readAShort();
-			this.mpDec = file.readAShort();
-			this.mpJumpControl = file.readAShort();
-			this.mpGravity = file.readAShort();
-			this.mpJump = file.readAShort();
+			this.mpSpeed = file.readAShort('mpSpeed');
+			this.mpAcc = file.readAShort('mpAcc');
+			this.mpDec = file.readAShort('mpDec');
+			this.mpJumpControl = file.readAShort('mpJumpControl');
+			this.mpGravity = file.readAShort('mpGravity');
+			this.mpJump = file.readAShort('mpJump');
 		}
 	});
 
@@ -299,13 +299,13 @@ CMoveDefRace.prototype = CServices.extend(new CMoveDef(),
 	{
 		load: function (file, length)
 		{
-			this.mrSpeed = file.readAShort();
-			this.mrAcc = file.readAShort();
-			this.mrDec = file.readAShort();
-			this.mrRot = file.readAShort();
-			this.mrBounceMult = file.readAShort();
-			this.mrAngles = file.readAShort();
-			this.mrOkReverse = file.readAShort();
+			this.mrSpeed = file.readAShort('mrSpeed');
+			this.mrAcc = file.readAShort('mrAcc');
+			this.mrDec = file.readAShort('mrDec');
+			this.mrRot = file.readAShort('mrRot');
+			this.mrBounceMult = file.readAShort('mrBounceMult');
+			this.mrAngles = file.readAShort('mrAngles');
+			this.mrOkReverse = file.readAShort('mrOkReverse');
 		}
 	});
 

@@ -275,7 +275,7 @@
 			this.versionNeeded = reader.readInt(2);
 			this.bitFlag = reader.readInt(2);
 			this.compressionMethod = reader.readString(2);
-			this.date = reader.readDate();
+			this.date = reader.readDate('date');
 			this.crc32 = reader.readInt(4);
 			this.compressedSize = reader.readInt(4);
 			this.uncompressedSize = reader.readInt(4);

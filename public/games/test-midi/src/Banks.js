@@ -69,10 +69,10 @@ CImageBank.prototype =
 	{
 		this.file = f;
 
-		this.nHandlesReel = this.file.readAShort();
+		this.nHandlesReel = this.file.readAShort('CImageBank nHandlesReel');
 		this.offsetsToImage = new Array(this.nHandlesReel);
 
-		var nImg = this.file.readAShort();
+		var nImg = this.file.readAShort('CImageBank nImg');
 		var n;
 		var offset;
 		var image = new CImage();
@@ -666,7 +666,7 @@ CImage.prototype =
 	loadHandle:    function (file)
 	{
 		this.filePointer = file.getFilePointer();
-		this.handle = file.readAShort();
+		this.handle = file.readAShort('CImage handle');
 		file.skipBytes(12);
 	},
 	doLoad:        function ()
@@ -689,13 +689,13 @@ CImage.prototype =
 		this.app = a;
 		this.filePointer = a.file.getFilePointer();
 
-		this.handle = a.file.readAShort();
-		this.width = a.file.readAShort();
-		this.height = a.file.readAShort();
-		this.xSpot = a.file.readShort();
-		this.ySpot = a.file.readShort();
-		this.xAP = a.file.readShort();
-		this.yAP = a.file.readShort();
+		this.handle = a.file.readAShort('CImage handle');
+		this.width = a.file.readAShort('CImage width');
+		this.height = a.file.readAShort('CImage height');
+		this.xSpot = a.file.readShort('CImage xSpot');
+		this.ySpot = a.file.readShort('CImage ySpot');
+		this.xAP = a.file.readShort('CImage xAP');
+		this.yAP = a.file.readShort('CImage yAP');
 		this.mosaic = 0;
 		this.img = null;
 		if (this.app.frame.mosaicHandles != null)
@@ -849,7 +849,7 @@ CFontBank.prototype =
 {
 	preLoad: function (file)
 	{
-		var number = file.readAInt();
+		var number = file.readAInt('number');
 		var n;
 
 		this.maxHandlesReel = 0;
@@ -1085,7 +1085,7 @@ CFont.prototype =
 {
 	loadHandle: function (file)
 	{
-		this.handle = file.readAInt();
+		this.handle = file.readAInt('handle');
 		if (file.bUnicode == false)
 		{
 			file.skipBytes(0x48);
@@ -1098,18 +1098,18 @@ CFont.prototype =
 
 	load: function (file)
 	{
-		this.handle = file.readAInt();
+		this.handle = file.readAInt('handle');
 		var debut = file.getFilePointer();
 		file.skipBytes(12);
 
-		this.lfHeight = file.readAInt();
+		this.lfHeight = file.readAInt('lfHeight');
 		if (this.lfHeight < 0)
 			this.lfHeight = -this.lfHeight;
 		file.readAInt();
 		file.readAInt();
 		file.readAInt();
-		this.lfWeight = file.readAInt();
-		this.lfItalic = file.readAByte();
+		this.lfWeight = file.readAInt('lfWeight');
+		this.lfItalic = file.readAByte('lfItalic');
 		file.readAByte();
 		file.readAByte();
 		file.readAByte();
@@ -1117,7 +1117,7 @@ CFont.prototype =
 		file.readAByte();
 		file.readAByte();
 		file.readAByte();
-		this.lfFaceName = file.readAString();
+		this.lfFaceName = file.readAString('lfFaceName');
 
 		if (file.bUnicode == false)
 		{
@@ -1196,7 +1196,7 @@ CSoundBank.prototype =
 	{
 		this.file = f;
 
-		this.nHandlesReel = this.file.readAShort();
+		this.nHandlesReel = this.file.readAShort('CSoundBank nHandlesReel');
 		this.offsetsToSounds = new Array(this.nHandlesReel);
 		this.useCount = new Array(this.nHandlesReel);
 		this.handleToIndex = new Array(this.nHandlesReel);
@@ -1207,7 +1207,7 @@ CSoundBank.prototype =
 			this.handleToIndex[n] = -1;
 		}
 
-		var nSons = this.file.readAShort();
+		var nSons = this.file.readAShort('CSoundBank nSons');
 		var n;
 		var sound = new CSound(this.app);
 		var offset;
@@ -1382,9 +1382,9 @@ CSound.prototype =
 {
 	loadHandle: function ()
 	{
-		this.handle = this.file.readAShort();
+		this.handle = this.file.readAShort('handle');
 		this.file.skipBytes(5);
-		var l = this.file.readAShort();
+		var l = this.file.readAShort('l');
 		if (this.file.bUnicode == false)
 			this.file.skipBytes(l);
 		else
@@ -1479,12 +1479,12 @@ CSound.prototype =
 	},
 	load:       function ()
 	{
-		this.handle = this.file.readAShort();
-		this.type = this.file.readAByte();
-		this.frequency = this.file.readAInt();
+		this.handle = this.file.readAShort('CSound handle');
+		this.type = this.file.readAByte('CSound type');
+		this.frequency = this.file.readAInt('CSound frequency');
 		this.currentFrequency = this.frequency;
-		var l = this.file.readAShort();
-		this.name = this.file.readAString(l);
+		var l = this.file.readAShort('CSound name length');
+		this.name = this.file.readAString(l, 'CSound name');
 		this.sound = null;
 		this.application.addDataToLoad(this);
 	},
@@ -1781,7 +1781,7 @@ CMusicBank.prototype =
 	{
 		this.file = f;
 
-		this.nHandlesReel = this.file.readAShort();
+		this.nHandlesReel = this.file.readAShort('CMusicBank nHandlesReel');
 		this.offsetsToMusics = new Array(this.nHandlesReel);
 		this.useCount = new Array(this.nHandlesReel);
 		this.handleToIndex = new Array(this.nHandlesReel);
@@ -1792,11 +1792,12 @@ CMusicBank.prototype =
 			this.handleToIndex[n] = -1;
 		}
 
-		var nSons = this.file.readAShort();
+
+		var noMusics = this.nHandlesReel;//this.file.readAShort('noMusics');
 		var n;
 		var music = new CMusic(this.app);
 		var offset;
-		for (n = 0; n < nSons; n++)
+		for (n = 0; n < noMusics; n++)
 		{
 			offset = this.file.getFilePointer();
 			music.loadHandle();
@@ -1960,9 +1961,9 @@ CMusic.prototype =
 {
 	loadHandle: function ()
 	{
-		this.handle = this.file.readAShort();
+		this.handle = this.file.readAShort('handle');
 		this.file.skipBytes(5);
-		var l = this.file.readAShort();
+		var l = this.file.readAShort('l');
 		if (this.file.bUnicode == false)
 			this.file.skipBytes(l);
 		else
@@ -1989,12 +1990,12 @@ CMusic.prototype =
 	},
 	load:       function ()
 	{
-		this.handle = this.file.readAShort();
-		this.type = this.file.readAByte();
-		this.frequency = this.file.readAInt();
+		this.handle = this.file.readAShort('CMusic handle');
+		this.type = this.file.readAByte('CMusic type');
+		this.frequency = this.file.readAInt('CMusic frequency');
 		this.currentFrequency = this.frequency;
-		var l = this.file.readAShort();
-		this.name = this.file.readAString(l);
+		var l = this.file.readAShort('CMusic name length');
+		this.name = this.file.readAString(l, 'CMusic name');
 		this.timidity = null;
 		this.application.addDataToLoad(this);
 	},

@@ -48,94 +48,94 @@ CAct.create = function (app)
 
     var debut = app.file.getFilePointer();
 
-	var size = app.file.readAShort()
+	var size = app.file.readAShort('action size')
 	var act = null;
-	var c = app.file.readAInt();
+	var c = app.file.readAInt('action type');
 	switch (c)
 	{
 		case ((0 << 16) | 0xFFFF):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((1 << 16) | 0xFFFF):		// ACT_SKIPMONITOR			
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((3 << 16) | 0xFFFF):
-			act = new ACT_SETVARG();
+			act = ACT_SETVARG;
 			break;
 		case ((4 << 16) | 0xFFFF):
-			act = new ACT_SUBVARG();
+			act = ACT_SUBVARG;
 			break;
 		case ((5 << 16) | 0xFFFF):
-			act = new ACT_ADDVARG();
+			act = ACT_ADDVARG;
 			break;
 		case ((6 << 16) | 0xFFFF):
-			act = new ACT_GRPACTIVATE();
+			act = ACT_GRPACTIVATE;
 			break;
 		case ((7 << 16) | 0xFFFF):
-			act = new ACT_GRPDEACTIVATE();
+			act = ACT_GRPDEACTIVATE;
 			break;
 		case ((14 << 16) | 0xFFFF):
-			act = new ACT_STARTLOOP();
+			act = ACT_STARTLOOP;
 			break;
 		case ((15 << 16) | 0xFFFF):
-			act = new ACT_STOPLOOP();
+			act = ACT_STOPLOOP;
 			break;
 		case ((16 << 16) | 0xFFFF):
-			act = new ACT_SETLOOPINDEX();
+			act = ACT_SETLOOPINDEX;
 			break;
 		case ((17 << 16) | 0xFFFF):
-			act = new ACT_RANDOMIZE();
+			act = ACT_RANDOMIZE;
 			break;
 		case ((19 << 16) | 0xFFFF):
-			act = new ACT_SETGLOBALSTRING();
+			act = ACT_SETGLOBALSTRING;
 			break;
 		case ((23 << 16) | 0xFFFF):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((24 << 16) | 0xFFFF):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 	    case ((27 << 16) | 0xFFFF):
-	        act = new ACT_SETVARGCONST();
+	        act = ACT_SETVARGCONST;
 	        bSetVarGConst = true;
 	        break;
 	    case ((28 << 16) | 0xFFFF):
-	        act = new ACT_SETVARG();
+	        act = ACT_SETVARG;
 	        break;
 	    case ((29 << 16) | 0xFFFF):
-	        act = new ACT_SETVARGCONST();
+	        act = ACT_SETVARGCONST;
 	        bSetVarGConst = true;
 	        break;
 	    case ((30 << 16) | 0xFFFF):
-	        act = new ACT_SETVARG();
+	        act = ACT_SETVARG;
 	        break;
 	    case ((31 << 16) | 0xFFFF):
-	        act = new ACT_ADDVARGCONST();
+	        act = ACT_ADDVARGCONST;
 	        bAddVarGConst = true;
 	        break;
 	    case ((32 << 16) | 0xFFFF):
-	        act = new ACT_ADDVARG();
+	        act = ACT_ADDVARG;
 	        break;
 	    case ((33 << 16) | 0xFFFF):
-	        act = new ACT_ADDVARGCONST();
+	        act = ACT_ADDVARGCONST;
 	        bAddVarGConst = true;
 	        break;
 	    case ((34 << 16) | 0xFFFF):
-	        act = new ACT_ADDVARG();
+	        act = ACT_ADDVARG;
 	        break;
 	    case ((35 << 16) | 0xFFFF):
-	        act = new ACT_SUBVARGCONST();
+	        act = ACT_SUBVARGCONST;
 	        bSubVarGConst = true;
 	        break;
 	    case ((36 << 16) | 0xFFFF):
-	        act = new ACT_SUBVARG();
+	        act = ACT_SUBVARG;
 	        break;
 	    case ((37 << 16) | 0xFFFF):
-	        act = new ACT_SUBVARGCONST();
+	        act = ACT_SUBVARGCONST;
 	        bSubVarGConst = true;
 	        break;
 	    case ((38 << 16) | 0xFFFF):
-	        act = new ACT_SUBVARG();
+	        act = ACT_SUBVARG;
 	        break;
 	    case ((43 << 16) | 0xFFFF):
 	        act = new ACT_EXECUTECHILDEVENTS;
@@ -144,373 +144,373 @@ CAct.create = function (app)
 	        act = new ACT_SKIP;
 	        break;
 	    case ((0 << 16) | 0xFFFE):
-			act = new ACT_PLAYSAMPLE();
+			act = ACT_PLAYSAMPLE;
 			break;
 		case ((1 << 16) | 0xFFFE):
-			act = new ACT_STOPSAMPLE();
+			act = ACT_STOPSAMPLE;
 			break;
-	    case ((2 << 16) | 0xFFFE):
-			act = new ACT_PLAYMUSIC();
+		case ((2 << 16) | 0xFFFE):
+			act = ACT_PLAYMUSIC;
 			break;
 		case ((3 << 16) | 0xFFFE):
-			act = new ACT_STOPMUSIC();
+			act = ACT_STOPMUSIC;
 			break;
 		case ((4 << 16) | 0xFFFE):
-			act = new ACT_PLAYLOOPSAMPLE();
+			act = ACT_PLAYLOOPSAMPLE;
 			break;
 		case ((5 << 16) | 0xFFFE):
-			act = new ACT_PLAYLOOPMUSIC();
+			act = ACT_PLAYLOOPMUSIC;
 			break;
 		case ((6 << 16) | 0xFFFE):
-			act = new ACT_STOPSPESAMPLE();
+			act = ACT_STOPSPESAMPLE;
 			break;
 		case ((7 << 16) | 0xFFFE):
-			act = new ACT_PAUSESAMPLE();
+			act = ACT_PAUSESAMPLE;
 			break;
 		case ((8 << 16) | 0xFFFE):
-			act = new ACT_RESUMESAMPLE();
+			act = ACT_RESUMESAMPLE;
 			break;
 		case ((9 << 16) | 0xFFFE):
-			act = new ACT_PAUSEMUSIC();
+			act = ACT_PAUSEMUSIC;
 			break;
 		case ((10 << 16) | 0xFFFE):
-			act = new ACT_RESUMEMUSIC();
+			act = ACT_RESUMEMUSIC;
 			break;
 		case ((11 << 16) | 0xFFFE):
-			act = new ACT_PLAYCHANNEL();
+			act = ACT_PLAYCHANNEL;
 			break;
 		case ((12 << 16) | 0xFFFE):
-			act = new ACT_PLAYLOOPCHANNEL();
+			act = ACT_PLAYLOOPCHANNEL;
 			break;
 		case ((13 << 16) | 0xFFFE):
-			act = new ACT_PAUSECHANNEL();
+			act = ACT_PAUSECHANNEL;
 			break;
 		case ((14 << 16) | 0xFFFE):
-			act = new ACT_RESUMECHANNEL();
+			act = ACT_RESUMECHANNEL;
 			break;
 		case ((15 << 16) | 0xFFFE):
-			act = new ACT_STOPCHANNEL();
+			act = ACT_STOPCHANNEL;
 			break;
 		case ((16 << 16) | 0xFFFE):
-			act = new ACT_SETCHANNELPOS();
+			act = ACT_SETCHANNELPOS;
 			break;
 		case ((17 << 16) | 0xFFFE):
-			act = new ACT_SETCHANNELVOL();
+			act = ACT_SETCHANNELVOL;
 			break;
 		case ((18 << 16) | 0xFFFE):				// SETCHANNELPAN
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((19 << 16) | 0xFFFE):
-			act = new ACT_SETSAMPLEPOS();
+			act = ACT_SETSAMPLEPOS;
 			break;
 		case ((20 << 16) | 0xFFFE):
-			act = new ACT_SETSAMPLEMAINVOL();
+			act = ACT_SETSAMPLEMAINVOL;
 			break;
 		case ((21 << 16) | 0xFFFE):
-			act = new ACT_SETSAMPLEVOL();
+			act = ACT_SETSAMPLEVOL;
 			break;
 		case ((22 << 16) | 0xFFFE):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((23 << 16) | 0xFFFE):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((24 << 16) | 0xFFFE):
-			act = new ACT_PAUSEALLCHANNELS();
+			act = ACT_PAUSEALLCHANNELS;
 			break;
 		case ((25 << 16) | 0xFFFE):
-			act = new ACT_RESUMEALLCHANNELS();
+			act = ACT_RESUMEALLCHANNELS;
 			break;
 		case ((26 << 16) | 0xFFFE):
-			// act = new ACT_PLAYMUSICFILE();
+			// act = ACT_PLAYMUSICFILE;
 			break;
 		case ((27 << 16) | 0xFFFE):
-			// act = new ACT_PLAYLOOPMUSICFILE();
+			// act = ACT_PLAYLOOPMUSICFILE;
 			break;
 		case ((28 << 16) | 0xFFFE):
-			// act = new ACT_PLAYFILECHANNEL();
+			// act = ACT_PLAYFILECHANNEL;
 			break;
 		case ((29 << 16) | 0xFFFE):
-			// act = new ACT_PLAYLOOPFILECHANNEL();
+			// act = ACT_PLAYLOOPFILECHANNEL;
 			break;
 		case ((30 << 16) | 0xFFFE):
-			act = new ACT_LOCKCHANNEL();
+			act = ACT_LOCKCHANNEL;
 			break;
 		case ((31 << 16) | 0xFFFE):
-			act = new ACT_UNLOCKCHANNEL();
+			act = ACT_UNLOCKCHANNEL;
 			break;
 		case ((32 << 16) | 0xFFFE):
-			act = new ACT_SETCHANNELFREQ();
+			act = ACT_SETCHANNELFREQ;
 			break;
 		case ((33 << 16) | 0xFFFE):
-			act = new ACT_SETSAMPLEFREQ();
+			act = ACT_SETSAMPLEFREQ;
 			break;
 		case ((0 << 16) | 0xFFFD):
-			act = new ACT_NEXTLEVEL();
+			act = ACT_NEXTLEVEL;
 			break;
 		case ((1 << 16) | 0xFFFD):
-			act = new ACT_PREVLEVEL();
+			act = ACT_PREVLEVEL;
 			break;
 		case ((2 << 16) | 0xFFFD):
-			act = new ACT_GOLEVEL();
+			act = ACT_GOLEVEL;
 			break;
 		case ((3 << 16) | 0xFFFD):
-			act = new ACT_PAUSEKEY();
+			act = ACT_PAUSEKEY;
 			break;
 		case ((4 << 16) | 0xFFFD):
-			act = new ACT_ENDGAME();
+			act = ACT_ENDGAME;
 			break;
 		case ((5 << 16) | 0xFFFD):
-			act = new ACT_RESTARTGAME();
+			act = ACT_RESTARTGAME;
 			break;
 		case ((6 << 16) | 0xFFFD):
-			act = new ACT_RESTARTLEVEL();
+			act = ACT_RESTARTLEVEL;
 			break;
 		case ((7 << 16) | 0xFFFD):
-			act = new ACT_CDISPLAY();
+			act = ACT_CDISPLAY;
 			break;
 		case ((8 << 16) | 0xFFFD):
-			act = new ACT_CDISPLAYX();
+			act = ACT_CDISPLAYX;
 			break;
 		case ((9 << 16) | 0xFFFD):
-			act = new ACT_CDISPLAYY();
+			act = ACT_CDISPLAYY;
 			break;
 		case ((14 << 16) | 0xFFFD):
-			act = new ACT_FULLSCREENMODE();
+			act = ACT_FULLSCREENMODE;
 			break;
 		case ((15 << 16) | 0xFFFD):
-			act = new ACT_WINDOWEDMODE();
+			act = ACT_WINDOWEDMODE;
 			break;
 		case ((16 << 16) | 0xFFFD):
-			act = new ACT_SETFRAMERATE();
+			act = ACT_SETFRAMERATE;
 			break;
 		case ((17 << 16) | 0xFFFD):
-			act = new ACT_PAUSEKEY();
+			act = ACT_PAUSEKEY;
 			break;
 		case ((18 << 16) | 0xFFFD):
-			act = new ACT_PAUSEANYKEY();
+			act = ACT_PAUSEANYKEY;
 			break;
 		case ((19 << 16) | 0xFFFD):
-			act = new ACT_SETVSYNCON();
+			act = ACT_SETVSYNCON;
 			break;
 		case ((20 << 16) | 0xFFFD):
-			act = new ACT_SETVSYNCOFF();
+			act = ACT_SETVSYNCOFF;
 			break;
 		case ((21 << 16) | 0xFFFD):
-			act = new ACT_SETVIRTUALWIDTH();
+			act = ACT_SETVIRTUALWIDTH;
 			break;
 		case ((22 << 16) | 0xFFFD):
-			act = new ACT_SETVIRTUALHEIGHT();
+			act = ACT_SETVIRTUALHEIGHT;
 			break;
 		case ((23 << 16) | 0xFFFD):
-			act = new ACT_SETFRAMEBDKCOLOR();
+			act = ACT_SETFRAMEBDKCOLOR;
 			break;
 		case ((24 << 16) | 0xFFFD):
-			act = new ACT_DELCREATEDBKDAT();
+			act = ACT_DELCREATEDBKDAT;
 			break;
 		case ((25 << 16) | 0xFFFD):
-			act = new ACT_DELALLCREATEDBKD();
+			act = ACT_DELALLCREATEDBKD;
 			break;
 		case ((26 << 16) | 0xFFFD):
-			act = new ACT_SETFRAMEWIDTH();
+			act = ACT_SETFRAMEWIDTH;
 			break;
 		case ((27 << 16) | 0xFFFD):
-			act = new ACT_SETFRAMEHEIGHT();
+			act = ACT_SETFRAMEHEIGHT;
 			break;
 		case ((31 << 16) | 0xFFFD):
-			act = new ACT_PLAYDEMO();
+			act = ACT_PLAYDEMO;
 			break;
 		case ((32 << 16) | 0xFFFD): 		// ACT_SETFRAMEEFFECT				
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((33 << 16) | 0xFFFD):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((34 << 16) | 0xFFFD):
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((35 << 16) | 0xFFFD):			// ACT_SETFRAMEALPHACOEF			
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 		case ((36 << 16) | 0xFFFD): 		// ACT_SETFRAMERGBCOEF				
-			act = new ACT_SKIP();
+			act = ACT_SKIP;
 			break;
 	    case ((37 << 16) | 0xFFFD): 		// ACT_SETSTRETCHRESAMPLING
-	        act = new ACT_SETSTRETCHRESAMPLING();
+	        act = ACT_SETSTRETCHRESAMPLING;
 	        break;
 	    case ((0 << 16) | 0xFFFC):
-			act = new ACT_SETTIMER();
+			act = ACT_SETTIMER;
 			break;
 		case ((1 << 16) | 0xFFFC):
-			act = new ACT_EVENTAFTER();
+			act = ACT_EVENTAFTER;
 			break;
 		case ((2 << 16) | 0xFFFC):
-			act = new ACT_NEVENTSAFTER();
+			act = ACT_NEVENTSAFTER;
 			break;
 		case ((0 << 16) | 0xFFFA):
-			act = new ACT_HIDECURSOR();
+			act = ACT_HIDECURSOR;
 			break;
 		case ((1 << 16) | 0xFFFA):
-			act = new ACT_SHOWCURSOR();
+			act = ACT_SHOWCURSOR;
 			break;
 		case ((0 << 16) | 0xFFF9):
-			act = new ACT_SETSCORE();
+			act = ACT_SETSCORE;
 			break;
 		case ((1 << 16) | 0xFFF9):
-			act = new ACT_SETLIVES();
+			act = ACT_SETLIVES;
 			break;
 		case ((2 << 16) | 0xFFF9):
-			act = new ACT_NOINPUT();
+			act = ACT_NOINPUT;
 			break;
 		case ((3 << 16) | 0xFFF9):
-			act = new ACT_RESTINPUT();
+			act = ACT_RESTINPUT;
 			break;
 		case ((4 << 16) | 0xFFF9):
-			act = new ACT_ADDSCORE();
+			act = ACT_ADDSCORE;
 			break;
 		case ((5 << 16) | 0xFFF9):
-			act = new ACT_ADDLIVES();
+			act = ACT_ADDLIVES;
 			break;
 		case ((6 << 16) | 0xFFF9):
-			act = new ACT_SUBSCORE();
+			act = ACT_SUBSCORE;
 			break;
 		case ((7 << 16) | 0xFFF9):
-			act = new ACT_SUBLIVES();
+			act = ACT_SUBLIVES;
 			break;
 		case ((8 << 16) | 0xFFF9):
-			act = new ACT_SETINPUT();
+			act = ACT_SETINPUT;
 			break;
 		case ((9 << 16) | 0xFFF9):
-			act = new ACT_SETINPUTKEY();
+			act = ACT_SETINPUTKEY;
 			break;
 		case ((10 << 16) | 0xFFF9):
-			act = new ACT_SETPLAYERNAME();
+			act = ACT_SETPLAYERNAME;
 			break;
 		case ((0 << 16) | 0xFFFB):
-			act = new ACT_CREATE();
+			act = ACT_CREATE;
 			break;
 		case ((1 << 16) | 0xFFFB):
-			act = new ACT_CREATEBYNAME();
+			act = ACT_CREATEBYNAME;
 			break;
 		case (((80 + 0) << 16) | 3):
-			act = new ACT_STRDESTROY();
+			act = ACT_STRDESTROY;
 			break;
 		case (( (80 + 1) << 16) | 3):
-			act = new ACT_STRDISPLAY();
+			act = ACT_STRDISPLAY;
 			break;
 		case (( (80 + 2) << 16) | 3):
-			act = new ACT_STRDISPLAYDURING();
+			act = ACT_STRDISPLAYDURING;
 			break;
 		case (( (80 + 3) << 16) | 3):
-			act = new ACT_STRSETCOLOUR();
+			act = ACT_STRSETCOLOUR;
 			break;
 		case (( (80 + 4) << 16) | 3):
-			act = new ACT_STRSET();
+			act = ACT_STRSET;
 			break;
 		case (( (80 + 5) << 16) | 3):
-			act = new ACT_STRPREV();
+			act = ACT_STRPREV;
 			break;
 		case (( (80 + 6) << 16) | 3):
-			act = new ACT_STRNEXT();
+			act = ACT_STRNEXT;
 			break;
 		case (( (80 + 7) << 16) | 3):
-			act = new ACT_STRDISPLAYSTRING();
+			act = ACT_STRDISPLAYSTRING;
 			break;
 		case (( (80 + 8) << 16) | 3):
-			act = new ACT_STRSETSTRING();
+			act = ACT_STRSETSTRING;
 			break;
 		case (((80 + 0) << 16) | 2):
-			act = new ACT_SPRPASTE();
+			act = ACT_SPRPASTE;
 			break;
 		case (((80 + 1) << 16) | 2):
-			act = new ACT_SPRFRONT();
+			act = ACT_SPRFRONT;
 			break;
 		case (((80 + 2) << 16) | 2):
-			act = new ACT_SPRBACK();
+			act = ACT_SPRBACK;
 			break;
 		case (((80 + 3) << 16) | 2):
-			act = new ACT_SPRADDBKD();
+			act = ACT_SPRADDBKD;
 			break;
 		case (((80 + 4) << 16) | 2):
-			act = new ACT_SPRREPLACECOLOR();
+			act = ACT_SPRREPLACECOLOR;
 			break;
 		case (((80 + 5) << 16) | 2):
-			act = new ACT_SPRSETSCALE();
+			act = ACT_SPRSETSCALE;
 			break;
 		case (((80 + 6) << 16) | 2):
-			act = new ACT_SPRSETSCALEX();
+			act = ACT_SPRSETSCALEX;
 			break;
 		case (((80 + 7) << 16) | 2):
-			act = new ACT_SPRSETSCALEY();
+			act = ACT_SPRSETSCALEY;
 			break;
 		case (((80 + 8) << 16) | 2):
-			act = new ACT_SPRSETANGLE();
+			act = ACT_SPRSETANGLE;
 			break;
 		case (( (80 + 0) << 16) | 7):
-			act = new ACT_CSETVALUE();
+			act = ACT_CSETVALUE;
 			break;
 		case (( (80 + 1) << 16) | 7):
-			act = new ACT_CADDVALUE();
+			act = ACT_CADDVALUE;
 			break;
 		case (( (80 + 2) << 16) | 7):
-			act = new ACT_CSUBVALUE();
+			act = ACT_CSUBVALUE;
 			break;
 		case (( (80 + 3) << 16) | 7):
-			act = new ACT_CSETMIN();
+			act = ACT_CSETMIN;
 			break;
 		case (( (80 + 4) << 16) | 7):
-			act = new ACT_CSETMAX();
+			act = ACT_CSETMAX;
 			break;
 		case (( (80 + 5) << 16) | 7):
-			act = new ACT_CSETCOLOR1();
+			act = ACT_CSETCOLOR1;
 			break;
 		case (( (80 + 6) << 16) | 7):
-			act = new ACT_CSETCOLOR2();
+			act = ACT_CSETCOLOR2;
 			break;
 		case (( (80 + 0) << 16) | 4):
-			act = new ACT_QASK();
+			act = ACT_QASK;
 			break;
 		case (((80 + 0) << 16) | 9):
-			act = new ACT_CCARESTARTAPP();
+			act = ACT_CCARESTARTAPP;
 			break;
 		case (((80 + 1) << 16) | 9):
-			act = new ACT_CCARESTARTFRAME();
+			act = ACT_CCARESTARTFRAME;
 			break;
 		case (((80 + 2) << 16) | 9):
-			act = new ACT_CCANEXTFRAME();
+			act = ACT_CCANEXTFRAME;
 			break;
 		case (((80 + 3) << 16) | 9):
-			act = new ACT_CCAPREVIOUSFRAME();
+			act = ACT_CCAPREVIOUSFRAME;
 			break;
 		case (((80 + 4) << 16) | 9):
-			act = new ACT_CCAENDAPP();
+			act = ACT_CCAENDAPP;
 			break;
 		case (((80 + 6) << 16) | 9):
-			act = new ACT_CCAJUMPFRAME();
+			act = ACT_CCAJUMPFRAME;
 			break;
 		case (((80 + 7) << 16) | 9):
-			act = new ACT_CCASETGLOBALVALUE();
+			act = ACT_CCASETGLOBALVALUE;
 			break;
 		case (((80 + 8) << 16) | 9):
-			act = new ACT_CCASHOW();
+			act = ACT_CCASHOW;
 			break;
 		case (((80 + 9) << 16) | 9):
-			act = new ACT_CCAHIDE();
+			act = ACT_CCAHIDE;
 			break;
 		case (((80 + 10) << 16) | 9):
-			act = new ACT_CCASETGLOBALSTRING();
+			act = ACT_CCASETGLOBALSTRING;
 			break;
 		case (((80 + 11) << 16) | 9):
-			act = new ACT_CCAPAUSEAPP();
+			act = ACT_CCAPAUSEAPP;
 			break;
 		case (((80 + 12) << 16) | 9):
-			act = new ACT_CCARESUMEAPP();
+			act = ACT_CCARESUMEAPP;
 			break;
 		case (((80 + 13) << 16) | 9):
-			act = new ACT_CCASETWIDTH();
+			act = ACT_CCASETWIDTH;
 			break;
 		case (((80 + 14) << 16) | 9):
-			act = new ACT_CCASETHEIGHT();
+			act = ACT_CCASETHEIGHT;
 			break;
 
 		    // Actions pour les objets extensions 
@@ -519,250 +519,250 @@ CAct.create = function (app)
 			switch (c & 0xFFFF0000)
 			{
 				case (1 << 16):
-					act = new ACT_EXTSETPOS();
+					act = ACT_EXTSETPOS;
 					break;
 				case (2 << 16):
-					act = new ACT_EXTSETX();
+					act = ACT_EXTSETX;
 					break;
 				case (3 << 16):
-					act = new ACT_EXTSETY();
+					act = ACT_EXTSETY;
 					break;
 				case (4 << 16):
-					act = new ACT_EXTSTOP();
+					act = ACT_EXTSTOP;
 					break;
 				case (5 << 16):
-					act = new ACT_EXTSTART();
+					act = ACT_EXTSTART;
 					break;
 				case (6 << 16):
-					act = new ACT_EXTSPEED();
+					act = ACT_EXTSPEED;
 					break;
 				case (7 << 16):
-					act = new ACT_EXTMAXSPEED();
+					act = ACT_EXTMAXSPEED;
 					break;
 				case (8 << 16):
-					act = new ACT_EXTWRAP();
+					act = ACT_EXTWRAP;
 					break;
 				case (9 << 16):
-					act = new ACT_EXTBOUNCE();
+					act = ACT_EXTBOUNCE;
 					break;
 				case (10 << 16):
-					act = new ACT_EXTREVERSE();
+					act = ACT_EXTREVERSE;
 					break;
 				case (11 << 16):
-					act = new ACT_EXTNEXTMOVE();
+					act = ACT_EXTNEXTMOVE;
 					break;
 				case (12 << 16):
-					act = new ACT_EXTPREVMOVE();
+					act = ACT_EXTPREVMOVE;
 					break;
 				case (13 << 16):
-					act = new ACT_EXTSELMOVE();
+					act = ACT_EXTSELMOVE;
 					break;
 				case (14 << 16):
-					act = new ACT_EXTLOOKAT();
+					act = ACT_EXTLOOKAT;
 					break;
 				case (15 << 16):
-					act = new ACT_EXTSTOPANIM();
+					act = ACT_EXTSTOPANIM;
 					break;
 				case (16 << 16):
-					act = new ACT_EXTSTARTANIM();
+					act = ACT_EXTSTARTANIM;
 					break;
 				case (17 << 16):
-					act = new ACT_EXTFORCEANIM();
+					act = ACT_EXTFORCEANIM;
 					break;
 				case (18 << 16):
-					act = new ACT_EXTFORCEDIR();
+					act = ACT_EXTFORCEDIR;
 					break;
 				case (19 << 16):
-					act = new ACT_EXTFORCESPEED();
+					act = ACT_EXTFORCESPEED;
 					break;
 				case (20 << 16):
-					act = new ACT_EXTRESTANIM();
+					act = ACT_EXTRESTANIM;
 					break;
 				case (21 << 16):
-					act = new ACT_EXTRESTDIR();
+					act = ACT_EXTRESTDIR;
 					break;
 				case (22 << 16):
-					act = new ACT_EXTRESTSPEED();
+					act = ACT_EXTRESTSPEED;
 					break;
 				case (23 << 16):
-					act = new ACT_EXTSETDIR();
+					act = ACT_EXTSETDIR;
 					break;
 				case (24 << 16):
-					act = new ACT_EXTDESTROY();
+					act = ACT_EXTDESTROY;
 					break;
 				case (25 << 16):
-					act = new ACT_EXTSHUFFLE();
+					act = ACT_EXTSHUFFLE;
 					break;
 				case (26 << 16):
-					act = new ACT_EXTHIDE();
+					act = ACT_EXTHIDE;
 					break;
 				case (27 << 16):
-					act = new ACT_EXTSHOW();
+					act = ACT_EXTSHOW;
 					break;
 				case (28 << 16):
-					act = new ACT_EXTDISPLAYDURING();
+					act = ACT_EXTDISPLAYDURING;
 					break;
 				case (29 << 16):
-					act = new ACT_EXTSHOOT();
+					act = ACT_EXTSHOOT;
 					break;
 				case (30 << 16):
-					act = new ACT_EXTSHOOTTOWARD();
+					act = ACT_EXTSHOOTTOWARD;
 					break;
 				case (31 << 16):
-					act = new ACT_EXTSETVAR();
+					act = ACT_EXTSETVAR;
 					bExtSetVar = true;
 					break;
 				case (32 << 16):
-					act = new ACT_EXTADDVAR();
+					act = ACT_EXTADDVAR;
 					bExtAddVar = true;
 					break;
 				case (33 << 16):
-					act = new ACT_EXTSUBVAR();
+					act = ACT_EXTSUBVAR;
 					bExtSubVar = true;
 					break;
 				case (34 << 16):
-					act = new ACT_EXTDISPATCHVAR();
+					act = ACT_EXTDISPATCHVAR;
 					break;
 				case (35 << 16):
-					act = new ACT_EXTSETFLAG();
+					act = ACT_EXTSETFLAG;
 					bExtSetFlag = true;
 					break;
 				case (36 << 16):
-					act = new ACT_EXTCLRFLAG();
+					act = ACT_EXTCLRFLAG;
 					bExtClrFlag = true;
 					break;
 				case (37 << 16):
-					act = new ACT_EXTCHGFLAG();
+					act = ACT_EXTCHGFLAG;
 					bExtChgFlag = true;
 					break;
 				case (38 << 16):
-					act = new ACT_EXTINKEFFECT();
+					act = ACT_EXTINKEFFECT;
 					break;
 				case (39 << 16):
-					act = new ACT_EXTSETSEMITRANSPARENCY();
+					act = ACT_EXTSETSEMITRANSPARENCY;
 					break;
 				case (40 << 16):
-					act = new ACT_EXTFORCEFRAME();
+					act = ACT_EXTFORCEFRAME;
 					break;
 				case (41 << 16):
-					act = new ACT_EXTRESTFRAME();
+					act = ACT_EXTRESTFRAME;
 					break;
 				case (42 << 16):
-					act = new ACT_EXTSETACCELERATION();
+					act = ACT_EXTSETACCELERATION;
 					break;
 				case (43 << 16):
-					act = new ACT_EXTSETDECELERATION();
+					act = ACT_EXTSETDECELERATION;
 					break;
 				case (44 << 16):
-					act = new ACT_EXTSETROTATINGSPEED();
+					act = ACT_EXTSETROTATINGSPEED;
 					break;
 				case (45 << 16):
-					act = new ACT_EXTSETDIRECTIONS();
+					act = ACT_EXTSETDIRECTIONS;
 					break;
 				case (46 << 16):
-					act = new ACT_EXTBRANCHNODE();
+					act = ACT_EXTBRANCHNODE;
 					break;
 				case (47 << 16):
-					act = new ACT_EXTSETGRAVITY();
+					act = ACT_EXTSETGRAVITY;
 					break;
 				case (48 << 16):
-					act = new ACT_EXTGOTONODE();
+					act = ACT_EXTGOTONODE;
 					break;
 				case (49 << 16):
-					act = new ACT_EXTSETVARSTRING();
+					act = ACT_EXTSETVARSTRING;
 					break;
 				case (50 << 16):
-					act = new ACT_EXTSETFONTNAME();
+					act = ACT_EXTSETFONTNAME;
 					break;
 				case (51 << 16):
-					act = new ACT_EXTSETFONTSIZE();
+					act = ACT_EXTSETFONTSIZE;
 					break;
 				case (52 << 16):
-					act = new ACT_EXTSETBOLD();
+					act = ACT_EXTSETBOLD;
 					break;
 				case (53 << 16):
-					act = new ACT_EXTSETITALIC();
+					act = ACT_EXTSETITALIC;
 					break;
 				case (54 << 16):
-					act = new ACT_EXTSETUNDERLINE();
+					act = ACT_EXTSETUNDERLINE;
 					break;
 				case (55 << 16):
-					act = new ACT_SKIP();
+					act = ACT_SKIP;
 					break;
 				case (56 << 16):
-					act = new ACT_EXTSETTEXTCOLOR();
+					act = ACT_EXTSETTEXTCOLOR;
 					break;
 				case (57 << 16):
-					act = new ACT_EXTSPRFRONT();
+					act = ACT_EXTSPRFRONT;
 					break;
 				case (58 << 16):
-					act = new ACT_EXTSPRBACK();
+					act = ACT_EXTSPRBACK;
 					break;
 				case (59 << 16):
-					act = new ACT_EXTMOVEBEFORE();
+					act = ACT_EXTMOVEBEFORE;
 					break;
 				case (60 << 16):
-					act = new ACT_EXTMOVEAFTER();
+					act = ACT_EXTMOVEAFTER;
 					break;
 				case (61 << 16):
-					act = new ACT_EXTMOVETOLAYER();
+					act = ACT_EXTMOVETOLAYER;
 					break;
 				case (62 << 16):				//  ACT_EXTADDTODEBUGGER		
-					act = new ACT_SKIP();
+					act = ACT_SKIP;
 					break;
 				case (63 << 16):
-					act = new ACT_EXTSETEFFECT();
+					act = ACT_EXTSETEFFECT;
 					break;
 				case (64 << 16):  //  ACT_EXTSETEFFECTPARAM
-					act = new ACT_SKIP();
+					act = ACT_SKIP;
 					break;
 				case (65 << 16):
-					act = new ACT_EXTSETALPHACOEF();
+					act = ACT_EXTSETALPHACOEF;
 					break;
 				case (66 << 16):
-					act = new ACT_EXTSETRGBCOEF();
+					act = ACT_EXTSETRGBCOEF;
 					break;
 				case (67 << 16):  // ACT_EXTSETEFFECTPARAMTEXTURE
-					act = new ACT_SKIP();
+					act = ACT_SKIP;
 					break;
 				case (68 << 16):
-					act = new ACT_EXTSETFRICTION();
+					act = ACT_EXTSETFRICTION;
 					break;
 				case (69 << 16):
-					act = new ACT_EXTSETELASTICITY();
+					act = ACT_EXTSETELASTICITY;
 					break;
 				case (70 << 16):
-					act = new ACT_EXTAPPLYIMPULSE();
+					act = ACT_EXTAPPLYIMPULSE;
 					break;
 				case (71 << 16):
-					act = new ACT_EXTAPPLYANGULARIMPULSE();
+					act = ACT_EXTAPPLYANGULARIMPULSE;
 					break;
 				case (72 << 16):
-					act = new ACT_EXTAPPLYFORCE();
+					act = ACT_EXTAPPLYFORCE;
 					break;
 				case (73 << 16):
-					act = new ACT_EXTAPPLYTORQUE();
+					act = ACT_EXTAPPLYTORQUE;
 					break;
 				case (74 << 16):
-					act = new ACT_EXTSETLINEARVELOCITY();
+					act = ACT_EXTSETLINEARVELOCITY;
 					break;
 				case (75 << 16):
-					act = new ACT_EXTSETANGULARVELOCITY();
+					act = ACT_EXTSETANGULARVELOCITY;
 					break;
 				case (76 << 16):
-					act = new ACT_EXTFOREACH();
+					act = ACT_EXTFOREACH;
 					break;
 				case (77 << 16):
-					act = new ACT_EXTFOREACH2();
+					act = ACT_EXTFOREACH2;
 					break;
 				case (78 << 16):
-					act = new ACT_EXTSTOPFORCE();
+					act = ACT_EXTSTOPFORCE;
 					break;
 				case (79 << 16):
-					act = new ACT_EXTSTOPTORQUE();
+					act = ACT_EXTSTOPTORQUE;
 					break;
 			    default:
-					act = new CActExtension();
+					act = CActExtension;
 					break;
 			}
 		}
@@ -770,13 +770,15 @@ CAct.create = function (app)
 
 	if (act != null)
 	{
+		console.log('ACTION: '+act.name);
+		act = new act();
 		act.evtCode = c;
-		act.evtOi = app.file.readShort();
-		act.evtOiList = app.file.readShort();
-		act.evtFlags = app.file.readAByte();
-		act.evtFlags2 = app.file.readAByte();
-		act.evtNParams = app.file.readAByte();
-		act.evtDefType = app.file.readAByte();
+		act.evtOi = app.file.readShort('evtOi');
+		act.evtOiList = app.file.readShort('evtOiList');
+		act.evtFlags = app.file.readAByte('evtFlags');
+		act.evtFlags2 = app.file.readAByte('evtFlags2');
+		act.evtNParams = app.file.readAByte('evtNParams');
+		act.evtDefType = app.file.readAByte('evtDefType');
 
 		if (act.evtNParams > 0)
 		{

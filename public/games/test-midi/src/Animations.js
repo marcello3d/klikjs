@@ -66,7 +66,7 @@ CAnim.prototype =
 		var n;
 		for (n = 0; n < 32; n++)
 		{
-			offsets[n] = file.readAShort();
+			offsets[n] = file.readAShort('offsets[n]');
 		}
 
 		this.anDirs = new Array(32);
@@ -181,13 +181,13 @@ CAnimHeader.prototype =
 		var debut = file.getFilePointer();
 
 		file.skipBytes(2);          // ahSize
-		this.ahAnimMax = file.readAShort();
+		this.ahAnimMax = file.readAShort('ahAnimMax');
 
 		var offsets = new Array(this.ahAnimMax);
 		var n;
 		for (n = 0; n < this.ahAnimMax; n++)
 		{
-			offsets[n] = file.readAShort();
+			offsets[n] = file.readAShort('offsets[n]');
 		}
 
 		this.ahAnims = new Array(this.ahAnimMax);
@@ -270,17 +270,17 @@ CAnimDir.prototype =
 {
 	load:         function (file)
 	{
-		this.adMinSpeed = file.readAByte();
-		this.adMaxSpeed = file.readAByte();
-		this.adRepeat = file.readAShort();
-		this.adRepeatFrame = file.readAShort();
-		this.adNumberOfFrame = file.readAShort();
+		this.adMinSpeed = file.readAByte('adMinSpeed');
+		this.adMaxSpeed = file.readAByte('adMaxSpeed');
+		this.adRepeat = file.readAShort('adRepeat');
+		this.adRepeatFrame = file.readAShort('adRepeatFrame');
+		this.adNumberOfFrame = file.readAShort('adNumberOfFrame');
 
 		this.adFrames = new Array(this.adNumberOfFrame);
 		var n;
 		for (n = 0; n < this.adNumberOfFrame; n++)
 		{
-			this.adFrames[n] = file.readAShort();
+			this.adFrames[n] = file.readAShort('adFrames[n]');
 		}
 	},
 	enumElements: function (enumImages)
