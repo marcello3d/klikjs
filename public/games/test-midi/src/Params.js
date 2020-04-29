@@ -48,6 +48,9 @@ CParam.create = function (app)
 		case 6:
 			param = new PARAM_SAMPLE(app);
 			break;
+		case 7:
+			param = new PARAM_MUSIC(app);
+			break;
 		case 9:
 			param = new PARAM_CREATE(app);
 			break;
@@ -495,8 +498,8 @@ function PARAM_SAMPLE(app)
 }
 function PARAM_MUSIC(app)
 {
-	this.sndHandle = app.file.readAShort('sndHandle');
-	this.sndFlags = app.file.readAShort('sndFlags');
+	this.sndHandle = app.file.readAShort('musicHandle');
+	this.sndFlags = app.file.readAShort('musicFlags');
 }
 function PARAM_SHORT(app)
 {

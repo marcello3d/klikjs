@@ -1792,7 +1792,6 @@ CMusicBank.prototype =
 			this.handleToIndex[n] = -1;
 		}
 
-
 		var noMusics = this.nHandlesReel;//this.file.readAShort('noMusics');
 		var n;
 		var music = new CMusic(this.app);
@@ -1961,9 +1960,9 @@ CMusic.prototype =
 {
 	loadHandle: function ()
 	{
-		this.handle = this.file.readAShort('handle');
+		this.handle = this.file.readAShort('CMusic loadHandle: handle');
 		this.file.skipBytes(5);
-		var l = this.file.readAShort('l');
+		var l = this.file.readAShort('CMusic loadHandle: l');
 		if (this.file.bUnicode == false)
 			this.file.skipBytes(l);
 		else
@@ -1990,17 +1989,16 @@ CMusic.prototype =
 	},
 	load:       function ()
 	{
-		this.handle = this.file.readAShort('CMusic handle');
-		this.type = this.file.readAByte('CMusic type');
-		this.frequency = this.file.readAInt('CMusic frequency');
-		this.currentFrequency = this.frequency;
-		var l = this.file.readAShort('CMusic name length');
-		this.name = this.file.readAString(l, 'CMusic name');
-		this.timidity = null;
+		this.handle = this.file.readAShort('CMusic load: handle');
+		// this.type = this.file.readAByte('CMusic type');
+		// var l = this.file.readAShort('CMusic name length');
+		// this.name = this.file.readAString(l, 'CMusic name');
+		// this.timidity = null;
 		this.application.addDataToLoad(this);
 	},
 	playIt:     function ()
 	{
+		console.log('[MIDI] play:', this.url);
 		if (this.timidity)
 		{
 			this.bEnded = false;
@@ -2023,6 +2021,7 @@ CMusic.prototype =
 	},
 	stop:       function ()
 	{
+		console.log('[MIDI] stop');
 		if (this.timidity)
 			this.timidity.pause();
 		else if (window.MIDIjs)
@@ -2034,6 +2033,7 @@ CMusic.prototype =
 	pause: function ()
 	{
 		if (!this.bPaused) {
+			console.log('[MIDI] pause');
 			if (this.timidity)
 				this.timidity.pause();
 			else if (window.MIDIjs)
@@ -2046,6 +2046,7 @@ CMusic.prototype =
 	resume: function ()
 	{
 		if (this.bPaused) {
+			console.log('[MIDI] resume');
 			if (this.timidity)
 				this.timidity.play();
 			else if (window.MIDIjs)

@@ -1629,6 +1629,7 @@ ACT_PLAYMUSIC.prototype =
 	execute: function (rhPtr)
 	{
 	    var p = this.evtParams[0];
+		console.log('ACT_PLAYMUSIC', this.evtParams)
 	    var bPrio = false;
 	    var nMusic = -1;
 	    // PARAM_EXPSTRING?
