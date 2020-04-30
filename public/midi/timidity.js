@@ -488,7 +488,7 @@
     (window.AudioContext || window.webkitAudioContext);
 
   window.Timidity = class Timidity extends EventEmitter {
-    constructor (baseUrl = '/') {
+    constructor (baseUrl = '/midi/') {
       super();
 
       this.destroyed = false;

@@ -54,7 +54,7 @@ export default function Game({
         {!started && <div className="preload">Click to load</div>}
         <canvas id="MMFCanvas" width={width} height={height} />
       </div>
-      <script type="text/javascript" src="/midi/timidity.js"></script>
+      <script type="text/javascript" src="/midi/timidity.min.js"></script>
       <script
         src={`/games/${id}/src/${runtimeClass}.js`}
         type="text/javascript"
