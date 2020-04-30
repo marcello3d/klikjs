@@ -3610,7 +3610,7 @@ CMusicPlayer.prototype =
 
 	play: function (handle, nLoops)
 	{
-		this.stopCurrentMusic();
+		this.stop();
 		var music = this.app.musicBank.getMusicFromHandle(handle);
 		if (music == null)
 			return;
@@ -3632,14 +3632,6 @@ CMusicPlayer.prototype =
 	getOnOff: function ()
 	{
 		return this.bOn;
-	},
-
-	stopCurrentMusic: function ()
-	{
-		if (this.currentMusic != null) {
-			this.currentMusic.stop();
-			this.currentMusic = null;
-		}
 	},
 
 	isMusicPlaying: function (handle)
@@ -3673,6 +3665,7 @@ CMusicPlayer.prototype =
 	{
 		if (this.currentMusic != null) {
 			this.currentMusic.stop();
+			this.currentMusic = null;
 		}
 	},
 

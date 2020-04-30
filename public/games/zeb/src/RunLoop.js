@@ -1888,7 +1888,10 @@ CRun.prototype =
 			}
 
 			if (!bKeepSounds)
+			{
 				this.rhApp.soundPlayer.pause();
+				this.rhApp.musicPlayer.pause();
+			}
 
 			// TODO		   Mouse.show();		   
 			//		   	this.rhApp.keyNew=false;
@@ -1917,6 +1920,7 @@ CRun.prototype =
 			}
 
 			this.rhApp.soundPlayer.resume();
+			this.rhApp.musicPlayer.resume();
 
 			// TODO     this.rhApp.flushKeyboard();
 
@@ -1931,6 +1935,7 @@ CRun.prototype =
 	f_StopSamples: function ()
 	{
 		this.rhApp.soundPlayer.stopAllSounds();
+		this.rhApp.musicPlayer.stop();
 	},
 
 	autoResize: function ()

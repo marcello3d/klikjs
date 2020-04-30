@@ -39,7 +39,7 @@ export function Layout({
         }
 
         main {
-          padding: 5rem 0;
+          padding: 2rem 0;
         }
 
         footer {

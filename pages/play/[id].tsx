@@ -16,6 +16,10 @@ function getToolName(tool: string): any {
       return "Clickteam Fusion";
   }
 }
+function preventDefault(event: React.KeyboardEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+}
 
 export default function Game({
   id,
@@ -50,14 +54,17 @@ export default function Game({
         {!started && <div className="preload">Click to load</div>}
         <canvas id="MMFCanvas" width={width} height={height} />
       </div>
-      <script
-        type="text/javascript"
-        src="https://www.midijs.net/lib/midi.js"
-      ></script>
+      <script type="text/javascript" src="/midi/timidity.js"></script>
       <script
         src={`/games/${id}/src/${runtimeClass}.js`}
         type="text/javascript"
       ></script>
+      <style jsx global>{`
+        html,
+        body {
+          overflow: hidden;
+        }
+      `}</style>
       <style jsx>{`
         .game {
           display: relative;

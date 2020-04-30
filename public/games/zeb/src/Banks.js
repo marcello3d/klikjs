@@ -1938,6 +1938,10 @@ CMusicBank.prototype =
 	}
 }
 
+function logMidi(message) {
+	// console.log(message);
+}
+
 // CMusic object
 // -----------------------------------------------------------------
 function CMusic(a)
@@ -1972,13 +1976,14 @@ CMusic.prototype =
 	doLoad:     function ()
 	{
 		this.url = this.application.resources + CServices.formatDiscName(this.handle, 'mid');
-		console.log('[MIDI] load:', this.url);
 		if (window.Timidity) {
+			logMidi('load:' + this.url);
 			this.timidity = new window.Timidity('/midi/');
 			this.timidity.load(this.url);
 			const that = this;
 
 			function onEnded () {
+				logMidi('song finished');
 				that.bEnded = true;
 			}
 
@@ -1999,15 +2004,12 @@ CMusic.prototype =
 	},
 	playIt:     function ()
 	{
-		console.log('[MIDI] play:', this.url);
 		if (this.timidity)
 		{
+			logMidi('play:' + this.url);
 			this.bEnded = false;
 			this.timidity.seek(0);
 			this.timidity.play();
-		}
-		else if (window.MIDIjs) {
-			window.MIDIjs.play(this.url)
 		}
 		this.bPaused = false;
 		this.bPlaying = true;
@@ -2022,11 +2024,11 @@ CMusic.prototype =
 	},
 	stop:       function ()
 	{
-		console.log('[MIDI] stop');
 		if (this.timidity)
+		{
+			logMidi('stop:' + this.url);
 			this.timidity.pause();
-		else if (window.MIDIjs)
-			window.MIDIjs.pause();
+		}
 		this.bPlaying = false;
 	},
 
@@ -2034,11 +2036,11 @@ CMusic.prototype =
 	pause: function ()
 	{
 		if (!this.bPaused) {
-			console.log('[MIDI] pause');
 			if (this.timidity)
+			{
+				logMidi('pause');
 				this.timidity.pause();
-			else if (window.MIDIjs)
-				window.MIDIjs.pause();
+			}
 			this.bPaused = true;
 		}
 	},
@@ -2047,11 +2049,10 @@ CMusic.prototype =
 	resume: function ()
 	{
 		if (this.bPaused) {
-			console.log('[MIDI] resume');
-			if (this.timidity)
+			if (this.timidity) {
+				logMidi('resume');
 				this.timidity.play();
-			else if (window.MIDIjs)
-				window.MIDIjs.resume();
+			}
 			this.bPaused = false;
 		}
 	},
@@ -2072,6 +2073,7 @@ CMusic.prototype =
 		{
 			return this.bEnded;
 		}
+		return false;
 	},
 
 	checkMusic: function ()
