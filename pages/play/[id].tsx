@@ -25,8 +25,10 @@ export default function Game({
   id,
   name,
   author,
+  date,
   runtimeClass,
   description,
+  notes,
   tool,
   resourcePath,
   width,
@@ -45,15 +47,21 @@ export default function Game({
   }, [started]);
   return (
     <Layout title={name}>
-      <p>
-        <b>{name}</b> by {author ?? <i>Unknown</i>}.{" "}
-        {tool && <>Made in {getToolName(tool)}</>}
+      <p className="flex">
+        <span className="left">
+          <b>{name}</b> by {author ?? <i>Unknown</i>}
+        </span>
+        <span className="right">
+          <strong>{date}</strong>
+        </span>
       </p>
       {description && <p>{description}</p>}
       <div className="game" onClick={startGame} style={{ width, height }}>
         {!started && <div className="preload">Click to load</div>}
         <canvas id="MMFCanvas" width={width} height={height} />
       </div>
+      {notes && <p>Notes: {notes}</p>}
+      {tool && <>Made in {getToolName(tool)}</>}
       <script type="text/javascript" src="/midi/timidity.min.js"></script>
       <script
         src={`/games/${id}/src/${runtimeClass}.js`}
@@ -66,6 +74,18 @@ export default function Game({
         }
       `}</style>
       <style jsx>{`
+        p.flex {
+          display: flex;
+          flex-direction: row;
+        }
+        .left,
+        .right {
+          flex-grow: 1;
+        }
+        .right {
+          text-align: right;
+        }
+
         .game {
           display: relative;
           border: solid 1px #000;

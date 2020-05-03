@@ -555,7 +555,9 @@
       this.emit('unstarted');
       this._stopInterval();
 
-      if (!this._ready) return this.once('_ready', () => this.load(urlOrBuf))
+      if (!this._ready) {
+        await new Promise((resolve) => this.once('_ready', resolve));
+      }
 
       this.emit('buffering');
 
