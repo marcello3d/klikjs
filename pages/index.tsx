@@ -19,8 +19,10 @@ export default function Home({ games }) {
           const { name, author, description, tool } = games[id];
           return (
             <a href={`play/${id}`} className="card" key={id}>
-              <p className="title">{name}</p>
-              <p className="author">by {author ?? <i>Unknown</i>}</p>
+              <p>
+                <span className="title">{name}</span>{" "}
+                <span className="author">by {author ?? <i>Unknown</i>}</span>
+              </p>
               {description && <p className="description">{description}</p>}
             </a>
           );
@@ -29,17 +31,12 @@ export default function Home({ games }) {
       <style jsx>{`
         .grid {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
+          flex-direction: column;
           margin-top: 3rem;
         }
         .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
+          margin: 0.1rem;
+          padding: 0.5rem;
           text-align: left;
           color: inherit;
           text-decoration: none;
@@ -61,7 +58,9 @@ export default function Home({ games }) {
         .card .author {
           color: #666;
         }
-
+        .card .description {
+          margin-top: 0.5rem;
+        }
         .card p {
           margin: 0;
         }
