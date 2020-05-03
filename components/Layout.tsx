@@ -22,8 +22,9 @@ export function Layout({
       </main>
 
       <footer>
-        Hacked together by{" "}
-        <a href="https://marcello.cellosoft.com/">Marcello</a> using{" "}
+        Klik.js is{" "}
+        <a href="https://github.com/marcello3d/klikjs/">open source</a>. Hacked
+        together by <a href="https://marcello.cellosoft.com/">Marcello</a> using{" "}
         <a href="https://nextjs.org">next.js</a>. Inspired by{" "}
         <a href="http://kliktopia.org">Kliktopia</a>.
       </footer>
